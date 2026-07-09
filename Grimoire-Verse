@@ -1,0 +1,1395 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Grimoire Verse — Apprends Verse pour UEFN</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&family=Noto+Sans+KR:wght@400;500;700&family=Noto+Sans+Devanagari:wght@400;500;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-deep: #120E1B;
+    --bg-panel: #1C1730;
+    --bg-panel-2: #241D3D;
+    --line: #33294F;
+    --gold: #E3B341;
+    --gold-soft: rgba(227,179,65,0.14);
+    --violet: #9C7CF4;
+    --violet-soft: rgba(156,124,244,0.16);
+    --teal: #2FBF9F;
+    --teal-soft: rgba(47,191,159,0.14);
+    --red: #F0665A;
+    --red-soft: rgba(240,102,90,0.14);
+    --text: #EDE9F7;
+    --text-dim: #A99FC4;
+    --text-faint: #6F6690;
+    --font-display: 'Fraunces', serif;
+    --font-body: 'Inter', 'Noto Sans JP', 'Noto Sans KR', 'Noto Sans Devanagari', sans-serif;
+    --font-mono: 'Fira Code', monospace;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html,body{height:100%;}
+  body{
+    background:
+      radial-gradient(ellipse 900px 500px at 50% -10%, rgba(156,124,244,0.16), transparent 60%),
+      radial-gradient(ellipse 700px 400px at 90% 100%, rgba(227,179,65,0.08), transparent 60%),
+      var(--bg-deep);
+    color: var(--text);
+    font-family: var(--font-body);
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+  }
+  ::selection{ background: var(--violet-soft); }
+  button{ font-family: inherit; cursor:pointer; }
+  button:focus-visible, input:focus-visible, select:focus-visible, .opt:focus-visible{
+    outline: 2px solid var(--gold); outline-offset:2px;
+  }
+
+  .topbar{
+    display:flex; align-items:center; justify-content:space-between;
+    max-width: 640px; margin: 0 auto; padding: 22px 20px 8px; gap:10px; flex-wrap:wrap;
+  }
+  .brand{ display:flex; align-items:center; gap:10px; }
+  .brand-mark{
+    width:30px; height:30px;
+    background: conic-gradient(from 210deg, var(--violet), var(--gold), var(--violet));
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+    flex-shrink:0;
+  }
+  .brand-name{ font-family: var(--font-display); font-size:19px; font-weight:600; letter-spacing:0.2px;}
+  .stats{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+  .stat{
+    display:flex; align-items:center; gap:6px;
+    font-weight:600; font-size:14px; color: var(--text-dim);
+    background: var(--bg-panel); border:1px solid var(--line);
+    padding: 6px 12px; border-radius: 999px;
+  }
+  .stat .flame{ color: var(--gold); }
+  .stat .gem{ color: var(--violet); }
+  #resetBtn{ font-size:16px; }
+  .lang-select{
+    background: var(--bg-panel); border:1px solid var(--line); color: var(--text);
+    font-family: inherit; font-size:13px; font-weight:600; padding:7px 10px; border-radius:999px;
+    -webkit-appearance:none; appearance:none; cursor:pointer;
+  }
+
+  .screen{ max-width: 640px; margin: 0 auto; padding: 10px 20px 80px; }
+  .intro{ text-align:center; padding: 22px 10px 34px; }
+  .intro h1{
+    font-family: var(--font-display); font-weight:700; font-size: 28px;
+    letter-spacing:0.2px; line-height:1.3; white-space:pre-line;
+    background: linear-gradient(120deg, var(--text) 30%, var(--gold) 70%);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .intro p{ color: var(--text-dim); font-size:14.5px; margin-top:8px; }
+
+  .path{ position:relative; padding: 10px 0 20px; }
+  .path::before{
+    content:''; position:absolute; left:50%; top:20px; bottom:20px;
+    width:2px; transform:translateX(-50%);
+    background: repeating-linear-gradient(to bottom, var(--line) 0 8px, transparent 8px 16px);
+  }
+  .unit-row{ position:relative; display:flex; justify-content:center; margin: 26px 0; }
+  .unit-row.left .unit-card{ transform: translateX(-92px); }
+  .unit-row.right .unit-card{ transform: translateX(92px); }
+  .unit-card{ display:flex; flex-direction:column; align-items:center; gap:10px; position:relative; z-index:2;}
+  .hex-btn{
+    width:84px; height:84px; border:none;
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+    display:flex; align-items:center; justify-content:center;
+    font-family: var(--font-display); font-weight:700; font-size:26px;
+    background: linear-gradient(155deg, var(--violet), #6a4fc9);
+    color: #fff; box-shadow: 0 8px 24px rgba(156,124,244,0.35);
+    transition: transform .15s ease, box-shadow .15s ease;
+  }
+  .hex-btn:hover{ transform: scale(1.06); }
+  .hex-btn:active{ transform: scale(0.97); }
+  .hex-btn.done{ background: linear-gradient(155deg, var(--gold), #b8862b); box-shadow: 0 8px 24px rgba(227,179,65,0.35); }
+  .hex-btn.locked{ background: var(--bg-panel-2); color: var(--text-faint); box-shadow:none; cursor:not-allowed; }
+  .hex-btn.locked:hover{ transform:none; }
+  .unit-label{ text-align:center; }
+  .unit-label .name{ font-weight:600; font-size:14.5px; }
+  .unit-label .sub{ font-size:12px; color: var(--text-faint); margin-top:2px; }
+
+  .overlay{ position:fixed; inset:0; background: var(--bg-deep); display:none; flex-direction:column; z-index:50; }
+  .overlay.active{ display:flex; }
+  .lesson-top{ display:flex; align-items:center; gap:14px; padding: 18px 20px; border-bottom:1px solid var(--line); }
+  .close-btn{ background:none; border:none; color: var(--text-faint); font-size:22px; line-height:1; padding:4px 8px; border-radius:8px; }
+  .close-btn:hover{ color: var(--text); background: var(--bg-panel); }
+  .progress-track{ flex:1; height:10px; background: var(--bg-panel); border-radius:999px; overflow:hidden; }
+  .progress-fill{ height:100%; background: linear-gradient(90deg, var(--violet), var(--gold)); width:0%; transition: width .35s ease; }
+  .hearts{ display:flex; gap:3px; font-size:16px; min-width:80px; justify-content:flex-end; }
+
+  .lesson-body{ flex:1; overflow-y:auto; display:flex; justify-content:center; padding: 30px 20px 20px; }
+  .card{ width:100%; max-width: 560px; }
+  .eyebrow{ font-size:12.5px; letter-spacing:1.2px; text-transform:uppercase; color: var(--violet); font-weight:600; }
+  .prompt{ font-family: var(--font-display); font-size:22px; font-weight:600; margin: 8px 0 22px; line-height:1.4; white-space:pre-line; }
+  .lesson-explain{ font-size:15px; line-height:1.75; color: var(--text-dim); margin-bottom:22px; }
+
+  .codeblock{
+    background: #0F0B1A; border:1px solid var(--line); border-radius:12px;
+    padding: 18px 20px; font-family: var(--font-mono); font-size:14.5px;
+    color: #D8CFF0; line-height:1.8; white-space:pre-wrap; margin-bottom:22px;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.03);
+  }
+  .blank-input{
+    background: var(--bg-panel-2); border:1.5px solid var(--violet);
+    color: var(--text); font-family: var(--font-mono); font-size:14.5px;
+    padding: 3px 10px; border-radius:6px; width: 120px; text-align:center;
+  }
+
+  .options{ display:flex; flex-direction:column; gap:10px; }
+  .opt{
+    text-align:left; background: var(--bg-panel); border:1.5px solid var(--line);
+    color: var(--text); padding: 14px 16px; border-radius:12px;
+    font-family: var(--font-mono); font-size:14.5px;
+    transition: border-color .15s ease, background .15s ease;
+  }
+  .opt:hover{ border-color: var(--violet); }
+  .opt.selected{ border-color: var(--violet); background: var(--violet-soft); }
+  .opt.correct{ border-color: var(--teal); background: var(--teal-soft); }
+  .opt.incorrect{ border-color: var(--red); background: var(--red-soft); }
+  .opt:disabled{ cursor:default; }
+
+  .feedback{ margin-top:18px; padding:14px 16px; border-radius:12px; font-size:14px; line-height:1.5; display:none; }
+  .feedback.show{ display:block; }
+  .feedback.correct{ background: var(--teal-soft); border:1px solid rgba(47,191,159,0.4); color:#BFF3E7; }
+  .feedback.incorrect{ background: var(--red-soft); border:1px solid rgba(240,102,90,0.4); color:#FAD2CE; }
+  .feedback b{ display:block; margin-bottom:3px; font-family: var(--font-display); font-size:14.5px; }
+
+  .lesson-footer{ padding: 16px 20px 24px; display:flex; justify-content:center; border-top:1px solid var(--line); }
+  .btn-main{
+    width:100%; max-width:560px; padding:15px; border:none; border-radius:14px;
+    background: var(--bg-panel-2); color: var(--text-faint); font-weight:700; font-size:15px;
+    letter-spacing:0.3px; transition: all .15s ease;
+  }
+  .btn-main.ready{ background: linear-gradient(90deg, var(--gold), #d4a53a); color:#251a05; box-shadow: 0 6px 18px rgba(227,179,65,0.3);}
+  .btn-main:disabled{ cursor:not-allowed; }
+
+  .summary{ flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding: 20px; }
+  .summary .big-mark{ font-size:64px; margin-bottom:12px; }
+  .summary h2{ font-family: var(--font-display); font-size:26px; font-weight:700; }
+  .summary p{ color: var(--text-dim); margin-top:8px; max-width:380px; }
+  .summary-stats{ display:flex; gap:18px; margin-top:24px; flex-wrap:wrap; justify-content:center; }
+  .summary-stat{ background: var(--bg-panel); border:1px solid var(--line); border-radius:14px; padding: 14px 22px; min-width:90px; }
+  .summary-stat .val{ font-family: var(--font-display); font-size:22px; font-weight:700; color: var(--gold); }
+  .summary-stat .lbl{ font-size:11.5px; color: var(--text-faint); text-transform:uppercase; letter-spacing:0.5px; margin-top:2px; }
+
+  @media (max-width: 460px){
+    .unit-row.left .unit-card, .unit-row.right .unit-card{ transform: translateX(0); }
+    .path::before{ display:none; }
+    .prompt{ font-size:19px; }
+  }
+</style>
+</head>
+<body>
+
+  <div class="topbar">
+    <div class="brand">
+      <div class="brand-mark"></div>
+      <div class="brand-name" id="brandName">Grimoire Verse</div>
+    </div>
+    <div class="stats">
+      <select class="lang-select" id="langSelect"></select>
+      <div class="stat"><span class="flame">🔥</span><span id="streakVal">0</span></div>
+      <div class="stat"><span class="gem">◆</span><span id="xpVal">0</span></div>
+      <button class="stat" id="resetBtn" style="cursor:pointer;">↺</button>
+    </div>
+  </div>
+
+  <div class="screen">
+    <div class="intro">
+      <h1 id="introTitle"></h1>
+      <p id="introSub"></p>
+    </div>
+    <div class="path" id="pathContainer"></div>
+  </div>
+
+  <div class="overlay" id="overlay">
+    <div class="lesson-top">
+      <button class="close-btn" id="closeBtn">✕</button>
+      <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+      <div class="hearts" id="heartsDisplay"></div>
+    </div>
+    <div class="lesson-body" id="lessonBody"></div>
+  </div>
+
+<script>
+/* ============ LANGUAGES ============ */
+const LANGS = [
+  {code:'fr', name:'Français'},
+  {code:'en', name:'English'},
+  {code:'es', name:'Español'},
+  {code:'pt', name:'Português (BR)'},
+  {code:'de', name:'Deutsch'},
+  {code:'ja', name:'日本語'},
+  {code:'ko', name:'한국어'},
+  {code:'hi', name:'हिन्दी'}
+];
+
+/* ============ I18N (UI strings) ============ */
+const UI = {
+  fr: { brand:"Grimoire Verse", introTitle:"Apprends le langage Verse,\nune leçon à la fois.", introSub:"Explications, exemples et exercices variés pour vraiment comprendre — pas juste deviner.", lessonTag:"Leçon", startExercises:"Commencer les exercices", validate:"Valider", continue:"Continuer", exact:"✓ Exact !", almostPrefix:"✗ Presque — la réponse était : ", notQuite:"✗ Pas tout à fait.", lessonDone:"Leçon terminée !", lessonDoneDesc:(t)=>`Tu as validé "${t}". Le chapitre suivant vient de s'ouvrir dans ton grimoire.`, correctLbl:"Correctes", xpLbl:"XP gagné", livesLbl:"Vies restantes", backToPath:"Retour au grimoire", noLivesTitle:"Plus de vies !", noLivesDesc:"Pas de souci, c'est comme ça qu'on apprend un langage. Retente cette leçon depuis le début.", retry:"Réessayer", resetLabel:"Réinitialiser", resetConfirm:"Tout remettre à zéro ? Ta progression, ton XP et ta série seront perdus." },
+  en: { brand:"Verse Grimoire", introTitle:"Learn the Verse language,\none lesson at a time.", introSub:"Explanations, examples and varied exercises to really understand — not just guess.", lessonTag:"Lesson", startExercises:"Start exercises", validate:"Check", continue:"Continue", exact:"✓ Correct!", almostPrefix:"✗ Close — the answer was: ", notQuite:"✗ Not quite.", lessonDone:"Lesson complete!", lessonDoneDesc:(t)=>`You've cleared "${t}". The next chapter just unlocked in your grimoire.`, correctLbl:"Correct", xpLbl:"XP earned", livesLbl:"Lives left", backToPath:"Back to the grimoire", noLivesTitle:"Out of lives!", noLivesDesc:"No worries, that's how you learn a language. Retry this lesson from the start.", retry:"Retry", resetLabel:"Reset", resetConfirm:"Reset everything? Your progress, XP and streak will be lost." },
+  es: { brand:"Grimorio Verse", introTitle:"Aprende el lenguaje Verse,\nuna lección a la vez.", introSub:"Explicaciones, ejemplos y ejercicios variados para entender de verdad — no solo adivinar.", lessonTag:"Lección", startExercises:"Empezar los ejercicios", validate:"Comprobar", continue:"Continuar", exact:"✓ ¡Correcto!", almostPrefix:"✗ Casi — la respuesta era: ", notQuite:"✗ No del todo.", lessonDone:"¡Lección completada!", lessonDoneDesc:(t)=>`Has superado "${t}". El siguiente capítulo se acaba de desbloquear en tu grimorio.`, correctLbl:"Correctas", xpLbl:"XP ganada", livesLbl:"Vidas restantes", backToPath:"Volver al grimorio", noLivesTitle:"¡Sin vidas!", noLivesDesc:"No pasa nada, así se aprende un lenguaje. Vuelve a intentar esta lección desde el principio.", retry:"Reintentar", resetLabel:"Reiniciar", resetConfirm:"¿Reiniciar todo? Se perderán tu progreso, XP y racha." },
+  pt: { brand:"Grimório Verse", introTitle:"Aprenda a linguagem Verse,\numa lição de cada vez.", introSub:"Explicações, exemplos e exercícios variados para realmente entender — não só adivinhar.", lessonTag:"Lição", startExercises:"Começar os exercícios", validate:"Verificar", continue:"Continuar", exact:"✓ Correto!", almostPrefix:"✗ Quase — a resposta era: ", notQuite:"✗ Não foi dessa vez.", lessonDone:"Lição concluída!", lessonDoneDesc:(t)=>`Você concluiu "${t}". O próximo capítulo acabou de abrir no seu grimório.`, correctLbl:"Acertos", xpLbl:"XP ganho", livesLbl:"Vidas restantes", backToPath:"Voltar ao grimório", noLivesTitle:"Sem vidas!", noLivesDesc:"Sem problemas, é assim que se aprende uma linguagem. Tente esta lição de novo desde o início.", retry:"Tentar de novo", resetLabel:"Reiniciar", resetConfirm:"Reiniciar tudo? Seu progresso, XP e sequência serão perdidos." },
+  de: { brand:"Verse-Grimoire", introTitle:"Lerne die Sprache Verse,\neine Lektion nach der anderen.", introSub:"Erklärungen, Beispiele und abwechslungsreiche Übungen, um wirklich zu verstehen — nicht nur zu raten.", lessonTag:"Lektion", startExercises:"Übungen starten", validate:"Prüfen", continue:"Weiter", exact:"✓ Richtig!", almostPrefix:"✗ Fast — die richtige Antwort war: ", notQuite:"✗ Nicht ganz.", lessonDone:"Lektion abgeschlossen!", lessonDoneDesc:(t)=>`Du hast "${t}" geschafft. Das nächste Kapitel ist jetzt in deinem Grimoire freigeschaltet.`, correctLbl:"Richtig", xpLbl:"XP erhalten", livesLbl:"Verbleibende Leben", backToPath:"Zurück zum Grimoire", noLivesTitle:"Keine Leben mehr!", noLivesDesc:"Kein Problem, so lernt man eine Sprache. Versuch diese Lektion noch einmal von vorne.", retry:"Erneut versuchen", resetLabel:"Zurücksetzen", resetConfirm:"Alles zurücksetzen? Dein Fortschritt, XP und deine Serie gehen verloren." },
+  ja: { brand:"Verseの魔導書", introTitle:"Verse言語を学ぼう、\n一つずつレッスンで。", introSub:"説明、例、そして多様な練習問題で、当てずっぽうではなく本当に理解できるように。", lessonTag:"レッスン", startExercises:"練習を始める", validate:"確認する", continue:"次へ", exact:"✓ 正解！", almostPrefix:"✗ 惜しい — 正解は：", notQuite:"✗ 違います。", lessonDone:"レッスン完了！", lessonDoneDesc:(t)=>`"${t}" をクリアしました。次の章が魔導書で解放されました。`, correctLbl:"正解数", xpLbl:"獲得XP", livesLbl:"残りライフ", backToPath:"魔導書に戻る", noLivesTitle:"ライフがなくなりました！", noLivesDesc:"大丈夫、それが言語を学ぶということです。このレッスンを最初からやり直しましょう。", retry:"再挑戦", resetLabel:"リセット", resetConfirm:"本当にすべてリセットしますか？進捗、XP、連続記録が失われます。" },
+  ko: { brand:"베르스 마법서", introTitle:"Verse 언어를 배워보세요,\n한 번에 한 레슨씩.", introSub:"설명, 예제, 다양한 연습 문제로 그냥 찍는 게 아니라 진짜로 이해하도록.", lessonTag:"레슨", startExercises:"연습 시작하기", validate:"확인", continue:"계속하기", exact:"✓ 정답!", almostPrefix:"✗ 아쉬워요 — 정답은: ", notQuite:"✗ 아니에요.", lessonDone:"레슨 완료!", lessonDoneDesc:(t)=>`"${t}" 레슨을 완료했습니다. 다음 챕터가 마법서에서 열렸습니다.`, correctLbl:"정답 수", xpLbl:"획득 XP", livesLbl:"남은 하트", backToPath:"마법서로 돌아가기", noLivesTitle:"하트가 없어요!", noLivesDesc:"괜찮아요, 언어는 원래 이렇게 배우는 거예요. 이 레슨을 처음부터 다시 시도해보세요.", retry:"다시 시도", resetLabel:"초기화", resetConfirm:"모두 초기화할까요? 진행 상황, XP, 연속 기록이 사라집니다." },
+  hi: { brand:"वर्स ग्रिमोयर", introTitle:"Verse भाषा सीखें,\nएक बार में एक पाठ।", introSub:"स्पष्टीकरण, उदाहरण और विविध अभ्यास ताकि आप सच में समझें — सिर्फ़ अंदाज़ा न लगाएं।", lessonTag:"पाठ", startExercises:"अभ्यास शुरू करें", validate:"जांचें", continue:"जारी रखें", exact:"✓ सही!", almostPrefix:"✗ लगभग सही — सही उत्तर था: ", notQuite:"✗ ऐसा नहीं है।", lessonDone:"पाठ पूरा हुआ!", lessonDoneDesc:(t)=>`आपने "${t}" पूरा कर लिया। अगला अध्याय अब आपकी ग्रिमोयर में खुल गया है।`, correctLbl:"सही उत्तर", xpLbl:"अर्जित XP", livesLbl:"बची हुई जानें", backToPath:"ग्रिमोयर पर वापस जाएं", noLivesTitle:"जानें खत्म!", noLivesDesc:"कोई बात नहीं, भाषा ऐसे ही सीखी जाती है। इस पाठ को फिर से शुरुआत से आज़माएं।", retry:"फिर कोशिश करें", resetLabel:"रीसेट करें", resetConfirm:"सब कुछ रीसेट करें? आपकी प्रगति, XP और स्ट्रीक खो जाएगी।" }
+};
+
+/* ============ DATA ============ */
+const UNITS = [
+{
+  id:'u1', num:1,
+  title:{fr:'Constantes & Variables',en:'Constants & Variables',es:'Constantes y variables',pt:'Constantes e variáveis',de:'Konstanten & Variablen',ja:'定数と変数',ko:'상수와 변수',hi:'स्थिरांक और वेरिएबल'},
+  subtitle:{fr:'var, set, immutabilité',en:'var, set, immutability',es:'var, set, inmutabilidad',pt:'var, set, imutabilidade',de:'var, set, Unveränderlichkeit',ja:'var、set、不変性',ko:'var, set, 불변성',hi:'var, set, अपरिवर्तनीयता'},
+  lesson:{
+    fr:"En Verse, toute donnée se déclare avec la forme Nom : Type = Valeur. Par défaut, une déclaration est IMMUABLE (une constante) : une fois la valeur donnée, elle ne peut plus jamais changer. Pour créer une variable modifiable, on ajoute le mot-clé var devant. Et pour changer la valeur d'une variable existante, on utilise obligatoirement le mot-clé set — jamais un simple '='.",
+    en:"In Verse, every piece of data is declared as Name : Type = Value. By default a declaration is IMMUTABLE (a constant): once given a value, it can never change again. To create a variable you can modify later, add the var keyword in front. And to change an existing variable's value, you must use the set keyword — never a plain '='.",
+    es:"En Verse, todo dato se declara con la forma Nombre : Tipo = Valor. Por defecto, una declaración es INMUTABLE (una constante): una vez dado el valor, ya no puede cambiar. Para crear una variable modificable, se añade la palabra clave var delante. Y para cambiar el valor de una variable existente, hay que usar obligatoriamente la palabra clave set — nunca un simple '='.",
+    pt:"Em Verse, todo dado é declarado como Nome : Tipo = Valor. Por padrão, uma declaração é IMUTÁVEL (uma constante): depois de definido o valor, ele nunca mais muda. Para criar uma variável que pode ser alterada depois, adicione a palavra-chave var na frente. E para mudar o valor de uma variável existente, é obrigatório usar a palavra-chave set — nunca um simples '='.",
+    de:"In Verse wird jede Angabe als Name : Typ = Wert deklariert. Standardmäßig ist eine Deklaration UNVERÄNDERLICH (eine Konstante): Einmal zugewiesen, ändert sich der Wert nie wieder. Um eine veränderbare Variable zu erstellen, fügst du das Schlüsselwort var davor ein. Und um den Wert einer bestehenden Variable zu ändern, musst du zwingend das Schlüsselwort set verwenden — niemals ein einfaches '='.",
+    ja:"Verseでは、すべてのデータは「名前 : 型 = 値」という形で宣言します。デフォルトでは宣言は不変（定数）です。一度値を与えると二度と変更できません。後で変更できる変数を作るには、前にvarキーワードを付けます。既存の変数の値を変更するには、必ずsetキーワードを使う必要があります — 単純な「=」ではダメです。",
+    ko:"Verse에서는 모든 데이터를 이름 : 타입 = 값 형태로 선언합니다. 기본적으로 선언은 불변(상수)입니다. 한 번 값이 주어지면 다시는 바뀌지 않습니다. 나중에 바꿀 수 있는 변수를 만들려면 앞에 var 키워드를 붙입니다. 기존 변수의 값을 바꾸려면 반드시 set 키워드를 사용해야 합니다 — 단순한 '='는 안 됩니다.",
+    hi:"Verse में हर डेटा को Name : Type = Value के रूप में घोषित किया जाता है। डिफ़ॉल्ट रूप से एक घोषणा अपरिवर्तनीय (स्थिरांक) होती है: एक बार मान दिए जाने के बाद वह कभी नहीं बदलता। बाद में बदली जा सकने वाली वेरिएबल बनाने के लिए, नाम से पहले var कीवर्ड जोड़ें। किसी मौजूदा वेरिएबल का मान बदलने के लिए, अनिवार्य रूप से set कीवर्ड का उपयोग करना होगा — सिर्फ़ '=' नहीं।"
+  },
+  lessonCode:{
+    fr:"Score : int = 0          # constante, ne changera jamais\nvar Lives : int = 3      # variable, modifiable\nset Lives = Lives - 1    # 'set' est obligatoire pour modifier",
+    en:"Score : int = 0          # constant, will never change\nvar Lives : int = 3      # variable, can be changed\nset Lives = Lives - 1    # 'set' is required to modify",
+    es:"Score : int = 0          # constante, nunca cambiará\nvar Lives : int = 3      # variable, modificable\nset Lives = Lives - 1    # 'set' es obligatorio para modificar",
+    pt:"Score : int = 0          # constante, nunca vai mudar\nvar Lives : int = 3      # variável, modificável\nset Lives = Lives - 1    # 'set' é obrigatório para modificar",
+    de:"Score : int = 0          # Konstante, ändert sich nie\nvar Lives : int = 3      # Variable, veränderbar\nset Lives = Lives - 1    # 'set' ist zum Ändern erforderlich",
+    ja:"Score : int = 0          # 定数、絶対に変わらない\nvar Lives : int = 3      # 変数、変更可能\nset Lives = Lives - 1    # 変更には 'set' が必須",
+    ko:"Score : int = 0          # 상수, 절대 변하지 않음\nvar Lives : int = 3      # 변수, 변경 가능\nset Lives = Lives - 1    # 변경하려면 'set'이 필수",
+    hi:"Score : int = 0          # स्थिरांक, कभी नहीं बदलेगा\nvar Lives : int = 3      # वेरिएबल, बदला जा सकता है\nset Lives = Lives - 1    # बदलने के लिए 'set' ज़रूरी है"
+  },
+  exercises: [
+    { type:'mcq',
+      prompt:{fr:"En Verse, comment déclare-t-on une constante (une valeur qui ne changera jamais) ?",en:"In Verse, how do you declare a constant (a value that will never change)?",es:"En Verse, ¿cómo se declara una constante (un valor que nunca cambiará)?",pt:"Em Verse, como se declara uma constante (um valor que nunca vai mudar)?",de:"Wie deklariert man in Verse eine Konstante (einen Wert, der sich nie ändert)?",ja:"Verseで、絶対に変わらない値（定数）はどう宣言しますか？",ko:"Verse에서 절대 변하지 않는 값(상수)은 어떻게 선언하나요?",hi:"Verse में स्थिरांक (ऐसा मान जो कभी नहीं बदलेगा) कैसे घोषित करें?"},
+      options:{fr:["Score : int = 0","var Score : int = 0","const Score : int = 0","let Score = 0"],en:["Score : int = 0","var Score : int = 0","const Score : int = 0","let Score = 0"],es:["Score : int = 0","var Score : int = 0","const Score : int = 0","let Score = 0"],pt:["Score : int = 0","var Score : int = 0","const Score : int = 0","let Score = 0"],de:["Score : int = 0","var Score : int = 0","const Score : int = 0","let Score = 0"],ja:["Score : int = 0","var Score : int = 0","const Score : int = 0","let Score = 0"],ko:["Score : int = 0","var Score : int = 0","const Score : int = 0","let Score = 0"],hi:["Score : int = 0","var Score : int = 0","const Score : int = 0","let Score = 0"]},
+      correct:0,
+      explain:{fr:"Sans le mot-clé var, une valeur est immuable par défaut en Verse. Pas besoin de const : l'absence de var suffit.",en:"Without the var keyword, a value is immutable by default in Verse. No need for const — the absence of var is enough.",es:"Sin la palabra clave var, un valor es inmutable por defecto en Verse. No hace falta const: la ausencia de var ya basta.",pt:"Sem a palavra-chave var, um valor é imutável por padrão em Verse. Não precisa de const: a ausência de var já basta.",de:"Ohne das Schlüsselwort var ist ein Wert in Verse standardmäßig unveränderlich. const wird nicht benötigt.",ja:"varキーワードがなければ、Verseでは値はデフォルトで不変です。constは不要で、varがないだけで十分です。",ko:"var 키워드가 없으면 Verse에서는 기본적으로 값이 불변입니다. const는 필요 없습니다.",hi:"var कीवर्ड के बिना, Verse में मान डिफ़ॉल्ट रूप से अपरिवर्तनीय होता है। const की ज़रूरत नहीं।"}
+    },
+    { type:'mcq',
+      prompt:{fr:"Comment déclare-t-on une variable qu'on pourra modifier plus tard ?",en:"How do you declare a variable you'll be able to change later?",es:"¿Cómo se declara una variable que podrás modificar más adelante?",pt:"Como se declara uma variável que você poderá modificar depois?",de:"Wie deklariert man eine Variable, die man später ändern kann?",ja:"後で変更できる変数はどう宣言しますか？",ko:"나중에 바꿀 수 있는 변수는 어떻게 선언하나요?",hi:"ऐसी वेरिएबल कैसे घोषित करें जिसे आप बाद में बदल सकें?"},
+      options:{fr:["Score : int = 0","var Score : int = 0","mutable Score : int = 0","Score := 0"],en:["Score : int = 0","var Score : int = 0","mutable Score : int = 0","Score := 0"],es:["Score : int = 0","var Score : int = 0","mutable Score : int = 0","Score := 0"],pt:["Score : int = 0","var Score : int = 0","mutable Score : int = 0","Score := 0"],de:["Score : int = 0","var Score : int = 0","mutable Score : int = 0","Score := 0"],ja:["Score : int = 0","var Score : int = 0","mutable Score : int = 0","Score := 0"],ko:["Score : int = 0","var Score : int = 0","mutable Score : int = 0","Score := 0"],hi:["Score : int = 0","var Score : int = 0","mutable Score : int = 0","Score := 0"]},
+      correct:1,
+      explain:{fr:"Le mot-clé var avant le nom indique que la variable pourra être modifiée après son initialisation.",en:"The var keyword before the name means the variable can be changed after it's initialized.",es:"La palabra clave var antes del nombre indica que la variable podrá modificarse después de su inicialización.",pt:"A palavra-chave var antes do nome indica que a variável poderá ser modificada após a inicialização.",de:"Das Schlüsselwort var vor dem Namen zeigt an, dass die Variable nach der Initialisierung geändert werden kann.",ja:"名前の前にあるvarキーワードは、初期化後に変数を変更できることを示します。",ko:"이름 앞의 var 키워드는 초기화 후에 변수를 변경할 수 있음을 나타냅니다.",hi:"नाम से पहले var कीवर्ड यह दर्शाता है कि वेरिएबल को शुरू करने के बाद बदला जा सकता है।"}
+    },
+    { type:'fill',
+      prompt:{fr:"Complète le mot-clé qui permet de modifier une variable existante.",en:"Fill in the keyword used to modify an existing variable.",es:"Completa la palabra clave que permite modificar una variable existente.",pt:"Complete a palavra-chave que permite modificar uma variável existente.",de:"Ergänze das Schlüsselwort, mit dem man eine bestehende Variable ändert.",ja:"既存の変数を変更するためのキーワードを入力してください。",ko:"기존 변수를 수정하는 데 쓰는 키워드를 채워 넣으세요.",hi:"मौजूदा वेरिएबल बदलने वाला कीवर्ड भरें।"},
+      codeBefore:"var Score : int = 0\n",
+      blankHint:{fr:"mot-clé",en:"keyword",es:"palabra clave",pt:"palavra-chave",de:"Schlüsselwort",ja:"キーワード",ko:"키워드",hi:"कीवर्ड"},
+      codeAfter:" Score = 100", answers:["set"],
+      explain:{fr:"Le mot-clé set est obligatoire en Verse pour modifier la valeur d'une variable déjà déclarée.",en:"The set keyword is required in Verse to change the value of an already-declared variable.",es:"La palabra clave set es obligatoria en Verse para modificar el valor de una variable ya declarada.",pt:"A palavra-chave set é obrigatória em Verse para modificar o valor de uma variável já declarada.",de:"Das Schlüsselwort set ist in Verse erforderlich, um den Wert einer bestehenden Variable zu ändern.",ja:"既に宣言された変数の値を変更するには、setキーワードが必須です。",ko:"이미 선언된 변수의 값을 바꾸려면 set 키워드가 필수입니다.",hi:"पहले से घोषित वेरिएबल का मान बदलने के लिए set कीवर्ड ज़रूरी है।"}
+    },
+    { type:'mcq',
+      prompt:{fr:"Quelle ligne provoque une erreur de compilation ?",en:"Which line causes a compile error?",es:"¿Qué línea provoca un error de compilación?",pt:"Qual linha causa um erro de compilação?",de:"Welche Zeile verursacht einen Kompilierungsfehler?",ja:"どの行がコンパイルエラーを引き起こしますか？",ko:"어느 줄이 컴파일 오류를 일으키나요?",hi:"कौन-सी लाइन कंपाइल एरर देती है?"},
+      code:"MaxScore : int = 1000\nset MaxScore = 500",
+      options:{
+        fr:["Aucune, tout est correct","La ligne 'set MaxScore = 500', car MaxScore est une constante","La ligne 'MaxScore : int = 1000'","Les deux lignes"],
+        en:["None, everything is correct","The line 'set MaxScore = 500', because MaxScore is a constant","The line 'MaxScore : int = 1000'","Both lines"],
+        es:["Ninguna, todo está correcto","La línea 'set MaxScore = 500', porque MaxScore es una constante","La línea 'MaxScore : int = 1000'","Las dos líneas"],
+        pt:["Nenhuma, está tudo certo","A linha 'set MaxScore = 500', porque MaxScore é uma constante","A linha 'MaxScore : int = 1000'","As duas linhas"],
+        de:["Keine, alles ist korrekt","Die Zeile 'set MaxScore = 500', weil MaxScore eine Konstante ist","Die Zeile 'MaxScore : int = 1000'","Beide Zeilen"],
+        ja:["どれもエラーにならない","'set MaxScore = 500' の行。MaxScoreは定数だから","'MaxScore : int = 1000' の行","両方の行"],
+        ko:["없음, 모두 올바름","'set MaxScore = 500' 줄, MaxScore가 상수이기 때문","'MaxScore : int = 1000' 줄","두 줄 다"],
+        hi:["कोई नहीं, सब सही है","'set MaxScore = 500' लाइन, क्योंकि MaxScore एक स्थिरांक है","'MaxScore : int = 1000' लाइन","दोनों लाइनें"]
+      },
+      correct:1,
+      explain:{fr:"MaxScore est déclaré sans var : c'est une constante. Toute tentative de la modifier avec set provoque une erreur.",en:"MaxScore is declared without var: it's a constant. Any attempt to change it with set causes an error.",es:"MaxScore se declara sin var: es una constante. Cualquier intento de modificarla con set provoca un error.",pt:"MaxScore é declarado sem var: é uma constante. Qualquer tentativa de modificá-lo com set causa um erro.",de:"MaxScore wird ohne var deklariert: es ist eine Konstante. Jeder Versuch, es mit set zu ändern, verursacht einen Fehler.",ja:"MaxScoreはvarなしで宣言されているため定数です。setで変更しようとするとエラーになります。",ko:"MaxScore는 var 없이 선언되어 상수입니다. set으로 바꾸려 하면 오류가 발생합니다。",hi:"MaxScore को var के बिना घोषित किया गया है: यह एक स्थिरांक है। इसे set से बदलने की कोई भी कोशिश एरर देगी।"}
+    },
+    { type:'fill',
+      prompt:{fr:"Complète le raccourci pour incrémenter Counter de 1.",en:"Fill in the shorthand to increment Counter by 1.",es:"Completa el atajo para incrementar Counter en 1.",pt:"Complete o atalho para incrementar Counter em 1.",de:"Ergänze die Kurzform, um Counter um 1 zu erhöhen.",ja:"Counterを1増やすための省略記法を入力してください。",ko:"Counter를 1 증가시키는 축약형을 채워 넣으세요.",hi:"Counter को 1 से बढ़ाने वाला शॉर्टकट भरें।"},
+      codeBefore:"var Counter : int = 0\nset Counter ",
+      blankHint:{fr:"opérateur",en:"operator",es:"operador",pt:"operador",de:"Operator",ja:"演算子",ko:"연산자",hi:"ऑपरेटर"},
+      codeAfter:" 1", answers:["+=","+= "],
+      explain:{fr:"+= est un raccourci pour 'ajouter puis réassigner', équivalent à set Counter = Counter + 1.",en:"+= is shorthand for 'add then reassign', equivalent to set Counter = Counter + 1.",es:"+= es un atajo para 'sumar y luego reasignar', equivalente a set Counter = Counter + 1.",pt:"+= é um atalho para 'somar e depois reatribuir', equivalente a set Counter = Counter + 1.",de:"+= ist eine Kurzform für 'addieren und neu zuweisen', gleichbedeutend mit set Counter = Counter + 1.",ja:"+= は「加算してから再代入する」の省略形で、set Counter = Counter + 1 と同じです。",ko:"+=는 '더한 다음 재할당'의 축약형으로, set Counter = Counter + 1과 같습니다.",hi:"+= 'जोड़ो फिर दोबारा असाइन करो' का शॉर्टकट है, जो set Counter = Counter + 1 के बराबर है।"}
+    },
+    { type:'mcq',
+      prompt:{fr:"Dans 'Score : int = 0', quel est le rôle du symbole ':' ?",en:"In 'Score : int = 0', what is the ':' symbol for?",es:"En 'Score : int = 0', ¿para qué sirve el símbolo ':'?",pt:"Em 'Score : int = 0', para que serve o símbolo ':'?",de:"Wofür steht das Symbol ':' in 'Score : int = 0'?",ja:"'Score : int = 0' の中で、記号 ':' の役割は？",ko:"'Score : int = 0'에서 ':' 기호는 무슨 역할을 하나요?",hi:"'Score : int = 0' में ':' चिह्न का क्या काम है?"},
+      options:{
+        fr:["Il sépare le nom de la variable de son type","Il sépare le type de la valeur","Il indique le début d'une boucle","Il indique un commentaire"],
+        en:["It separates the variable name from its type","It separates the type from the value","It marks the start of a loop","It marks a comment"],
+        es:["Separa el nombre de la variable de su tipo","Separa el tipo del valor","Marca el inicio de un bucle","Marca un comentario"],
+        pt:["Separa o nome da variável do seu tipo","Separa o tipo do valor","Marca o início de um loop","Marca um comentário"],
+        de:["Trennt den Variablennamen vom Typ","Trennt den Typ vom Wert","Kennzeichnet den Beginn einer Schleife","Kennzeichnet einen Kommentar"],
+        ja:["変数名と型を区切る","型と値を区切る","ループの開始を示す","コメントを示す"],
+        ko:["변수 이름과 타입을 구분함","타입과 값을 구분함","반복문의 시작을 나타냄","주석을 나타냄"],
+        hi:["वेरिएबल के नाम को उसके टाइप से अलग करता है","टाइप को मान से अलग करता है","लूप की शुरुआत दिखाता है","कमेंट दिखाता है"]
+      },
+      correct:0,
+      explain:{fr:"L'ordre en Verse est toujours : Nom : Type = Valeur. Le ':' introduit le type, le '=' introduit la valeur.",en:"The order in Verse is always: Name : Type = Value. ':' introduces the type, '=' introduces the value.",es:"El orden en Verse siempre es: Nombre : Tipo = Valor. El ':' introduce el tipo, el '=' introduce el valor.",pt:"A ordem em Verse é sempre: Nome : Tipo = Valor. O ':' introduz o tipo, o '=' introduz o valor.",de:"Die Reihenfolge in Verse ist immer: Name : Typ = Wert. Das ':' leitet den Typ ein, das '=' den Wert.",ja:"Verseの順序は常に「名前 : 型 = 値」です。':' は型を、'=' は値を導入します。",ko:"Verse의 순서는 항상 이름 : 타입 = 값입니다. ':'는 타입을, '='는 값을 나타냅니다.",hi:"Verse में क्रम हमेशा यही होता है: Name : Type = Value। ':' टाइप बताता है, '=' मान बताता है।"}
+    },
+    { type:'fill',
+      prompt:{fr:"Complète pour déclarer une variable Health modifiable, initialisée à 100.",en:"Fill in to declare a modifiable Health variable, initialized to 100.",es:"Completa para declarar una variable Health modificable, inicializada en 100.",pt:"Complete para declarar uma variável Health modificável, inicializada em 100.",de:"Ergänze, um eine veränderbare Variable Health zu deklarieren, initialisiert mit 100.",ja:"100で初期化された変更可能な変数Healthを宣言してください。",ko:"100으로 초기화된 변경 가능한 Health 변수를 선언하세요.",hi:"100 से शुरू होने वाली, बदली जा सकने वाली Health वेरिएबल घोषित करें।"},
+      codeBefore:"",
+      blankHint:{fr:"mot-clé",en:"keyword",es:"palabra clave",pt:"palavra-chave",de:"Schlüsselwort",ja:"キーワード",ko:"키워드",hi:"कीवर्ड"},
+      codeAfter:" Health : int = 100", answers:["var"],
+      explain:{fr:"var devant le nom rend la variable modifiable ; sans lui, Health serait une constante.",en:"var before the name makes the variable modifiable; without it, Health would be a constant.",es:"var delante del nombre hace que la variable sea modificable; sin él, Health sería una constante.",pt:"var antes do nome torna a variável modificável; sem ele, Health seria uma constante.",de:"var vor dem Namen macht die Variable veränderbar; ohne es wäre Health eine Konstante.",ja:"名前の前のvarが変数を変更可能にします。なければHealthは定数になります。",ko:"이름 앞의 var가 변수를 변경 가능하게 만듭니다. 없으면 Health는 상수가 됩니다.",hi:"नाम से पहले var वेरिएबल को बदलने योग्य बनाता है; इसके बिना Health एक स्थिरांक होता।"}
+    },
+    { type:'mcq',
+      prompt:{fr:"var Ammo : int = 30 puis set Ammo = Ammo - 1. Que vaut Ammo après cette ligne ?",en:"var Ammo : int = 30 then set Ammo = Ammo - 1. What is Ammo after this line?",es:"var Ammo : int = 30 y luego set Ammo = Ammo - 1. ¿Cuánto vale Ammo después de esta línea?",pt:"var Ammo : int = 30 e depois set Ammo = Ammo - 1. Quanto vale Ammo depois dessa linha?",de:"var Ammo : int = 30, dann set Ammo = Ammo - 1. Welchen Wert hat Ammo danach?",ja:"var Ammo : int = 30 の後に set Ammo = Ammo - 1 を実行。この行の後、Ammoの値は？",ko:"var Ammo : int = 30 다음 set Ammo = Ammo - 1. 이 줄 이후 Ammo의 값은?",hi:"var Ammo : int = 30 फिर set Ammo = Ammo - 1। इस लाइन के बाद Ammo का मान क्या है?"},
+      options:{fr:["30","29","-1","Erreur"],en:["30","29","-1","Error"],es:["30","29","-1","Error"],pt:["30","29","-1","Erro"],de:["30","29","-1","Fehler"],ja:["30","29","-1","エラー"],ko:["30","29","-1","오류"],hi:["30","29","-1","एरर"]},
+      correct:1,
+      explain:{fr:"set réassigne Ammo à sa valeur actuelle moins 1 : 30 - 1 = 29.",en:"set reassigns Ammo to its current value minus 1: 30 - 1 = 29.",es:"set reasigna Ammo a su valor actual menos 1: 30 - 1 = 29.",pt:"set reatribui Ammo ao seu valor atual menos 1: 30 - 1 = 29.",de:"set weist Ammo seinen aktuellen Wert minus 1 zu: 30 - 1 = 29.",ja:"setはAmmoを現在の値から1引いた値に再代入します：30 - 1 = 29。",ko:"set은 Ammo를 현재 값에서 1을 뺀 값으로 재할당합니다: 30 - 1 = 29.",hi:"set, Ammo को उसके मौजूदा मान में से 1 घटाकर दोबारा सेट करता है: 30 - 1 = 29।"}
+    }
+  ]
+},
+{
+  id:'u2', num:2,
+  title:{fr:'Types de base',en:'Basic types',es:'Tipos básicos',pt:'Tipos básicos',de:'Grundtypen',ja:'基本型',ko:'기본 타입',hi:'बेसिक टाइप्स'},
+  subtitle:{fr:'int, float, string, logic',en:'int, float, string, logic',es:'int, float, string, logic',pt:'int, float, string, logic',de:'int, float, string, logic',ja:'int、float、string、logic',ko:'int, float, string, logic',hi:'int, float, string, logic'},
+  lesson:{
+    fr:"Verse est un langage à typage statique : chaque valeur a un type précis, écrit après le ':'. Les types de base les plus courants sont int (nombres entiers), float (nombres à virgule), string (texte) et logic (vrai/faux — attention, pas 'bool' !). Le type déclaré doit toujours correspondre à la valeur donnée, sinon le code ne compile pas.",
+    en:"Verse is statically typed: every value has a precise type, written after the ':'. The most common basic types are int (whole numbers), float (decimal numbers), string (text) and logic (true/false — note, not 'bool'!). The declared type must always match the given value, or the code won't compile.",
+    es:"Verse es un lenguaje de tipado estático: cada valor tiene un tipo preciso, escrito después de ':'. Los tipos básicos más comunes son int (números enteros), float (números decimales), string (texto) y logic (verdadero/falso — ¡ojo, no 'bool'!). El tipo declarado siempre debe coincidir con el valor dado, o el código no compilará.",
+    pt:"Verse é uma linguagem de tipagem estática: todo valor tem um tipo preciso, escrito depois do ':'. Os tipos básicos mais comuns são int (números inteiros), float (números decimais), string (texto) e logic (verdadeiro/falso — atenção, não é 'bool'!). O tipo declarado sempre deve corresponder ao valor dado, ou o código não compila.",
+    de:"Verse ist statisch typisiert: Jeder Wert hat einen genauen Typ, geschrieben nach dem ':'. Die häufigsten Grundtypen sind int (ganze Zahlen), float (Dezimalzahlen), string (Text) und logic (wahr/falsch — Achtung, nicht 'bool'!). Der deklarierte Typ muss immer zum gegebenen Wert passen, sonst kompiliert der Code nicht.",
+    ja:"Verseは静的型付け言語です。すべての値には ':' の後に正確な型が書かれます。よく使う基本型は int（整数）、float（小数）、string（文字列）、logic（真偽値 — 'bool'ではないので注意！）です。宣言した型は値と一致していないとコンパイルできません。",
+    ko:"Verse는 정적 타입 언어입니다. 모든 값은 ':' 뒤에 정확한 타입을 가집니다. 가장 흔한 기본 타입은 int(정수), float(소수), string(문자열), logic(참/거짓 — 'bool'이 아님에 주의!)입니다. 선언한 타입은 항상 주어진 값과 일치해야 컴파일됩니다.",
+    hi:"Verse एक स्टैटिकली टाइप की गई भाषा है: हर मान का एक सटीक टाइप होता है, जो ':' के बाद लिखा जाता है। सबसे सामान्य बेसिक टाइप हैं int (पूर्णांक), float (दशमलव संख्या), string (टेक्स्ट) और logic (सही/गलत — ध्यान दें, 'bool' नहीं!)। घोषित टाइप हमेशा दिए गए मान से मेल खाना चाहिए, वरना कोड कंपाइल नहीं होगा।"
+  },
+  lessonCode:{
+    fr:"Score : int = 100\nSpeed : float = 2.5\nPlayerName : string = \"Ninja\"\nvar IsAlive : logic = true",
+    en:"Score : int = 100\nSpeed : float = 2.5\nPlayerName : string = \"Ninja\"\nvar IsAlive : logic = true",
+    es:"Score : int = 100\nSpeed : float = 2.5\nPlayerName : string = \"Ninja\"\nvar IsAlive : logic = true",
+    pt:"Score : int = 100\nSpeed : float = 2.5\nPlayerName : string = \"Ninja\"\nvar IsAlive : logic = true",
+    de:"Score : int = 100\nSpeed : float = 2.5\nPlayerName : string = \"Ninja\"\nvar IsAlive : logic = true",
+    ja:"Score : int = 100\nSpeed : float = 2.5\nPlayerName : string = \"Ninja\"\nvar IsAlive : logic = true",
+    ko:"Score : int = 100\nSpeed : float = 2.5\nPlayerName : string = \"Ninja\"\nvar IsAlive : logic = true",
+    hi:"Score : int = 100\nSpeed : float = 2.5\nPlayerName : string = \"Ninja\"\nvar IsAlive : logic = true"
+  },
+  exercises: [
+    { type:'mcq',
+      prompt:{fr:"Quel type utiliser pour stocker un score, comme 100 ?",en:"Which type would you use to store a score, like 100?",es:"¿Qué tipo usarías para guardar una puntuación, como 100?",pt:"Que tipo você usaria para guardar uma pontuação, como 100?",de:"Welchen Typ würdest du für einen Punktestand wie 100 verwenden?",ja:"100のようなスコアを保存するにはどの型を使いますか？",ko:"100 같은 점수를 저장하려면 어떤 타입을 쓰나요?",hi:"100 जैसा स्कोर सेव करने के लिए कौन-सा टाइप इस्तेमाल करेंगे?"},
+      options:{fr:["int","float","string","logic"],en:["int","float","string","logic"],es:["int","float","string","logic"],pt:["int","float","string","logic"],de:["int","float","string","logic"],ja:["int","float","string","logic"],ko:["int","float","string","logic"],hi:["int","float","string","logic"]},
+      correct:0,
+      explain:{fr:"int représente un nombre entier — parfait pour un score, un nombre de vies, un compteur.",en:"int represents a whole number — perfect for a score, a life count, a counter.",es:"int representa un número entero — perfecto para una puntuación, vidas, un contador.",pt:"int representa um número inteiro — perfeito para pontuação, vidas, um contador.",de:"int steht für eine ganze Zahl — perfekt für Punktestand, Leben, Zähler.",ja:"intは整数を表します — スコアやライフ数、カウンターに最適です。",ko:"int는 정수를 나타냅니다 — 점수, 목숨 수, 카운터에 적합합니다.",hi:"int एक पूर्णांक दर्शाता है — स्कोर, जानों की संख्या, काउंटर के लिए एकदम सही।"}
+    },
+    { type:'mcq',
+      prompt:{fr:"Quel type utiliser pour stocker une valeur comme 3.14 ?",en:"Which type would you use to store a value like 3.14?",es:"¿Qué tipo usarías para guardar un valor como 3.14?",pt:"Que tipo você usaria para guardar um valor como 3.14?",de:"Welchen Typ würdest du für einen Wert wie 3.14 verwenden?",ja:"3.14のような値を保存するにはどの型を使いますか？",ko:"3.14 같은 값을 저장하려면 어떤 타입을 쓰나요?",hi:"3.14 जैसा मान सेव करने के लिए कौन-सा टाइप इस्तेमाल करेंगे?"},
+      options:{fr:["int","float","string","char"],en:["int","float","string","char"],es:["int","float","string","char"],pt:["int","float","string","char"],de:["int","float","string","char"],ja:["int","float","string","char"],ko:["int","float","string","char"],hi:["int","float","string","char"]},
+      correct:1,
+      explain:{fr:"float représente un nombre à virgule flottante, utile pour des positions, des vitesses, des multiplicateurs...",en:"float represents a floating-point number, useful for positions, speeds, multipliers...",es:"float representa un número con decimales, útil para posiciones, velocidades, multiplicadores...",pt:"float representa um número com casas decimais, útil para posições, velocidades, multiplicadores...",de:"float steht für eine Gleitkommazahl, nützlich für Positionen, Geschwindigkeiten, Multiplikatoren...",ja:"floatは浮動小数点数を表し、位置や速度、倍率などに便利です。",ko:"float는 부동소수점 숫자로, 위치·속도·배율 등에 유용합니다.",hi:"float एक दशमलव संख्या दर्शाता है, जो पोज़िशन, स्पीड, मल्टीप्लायर के लिए उपयोगी है..."}
+    },
+    { type:'mcq',
+      prompt:{fr:"Quel type utiliser pour stocker le nom d'un joueur, comme \"Ninja\" ?",en:"Which type would you use to store a player's name, like \"Ninja\"?",es:"¿Qué tipo usarías para guardar el nombre de un jugador, como \"Ninja\"?",pt:"Que tipo você usaria para guardar o nome de um jogador, como \"Ninja\"?",de:"Welchen Typ würdest du für den Namen eines Spielers wie \"Ninja\" verwenden?",ja:"\"Ninja\"のようなプレイヤー名を保存するにはどの型を使いますか？",ko:"\"Ninja\" 같은 플레이어 이름을 저장하려면 어떤 타입을 쓰나요?",hi:"\"Ninja\" जैसा खिलाड़ी का नाम सेव करने के लिए कौन-सा टाइप इस्तेमाल करेंगे?"},
+      options:{fr:["char","logic","string","int"],en:["char","logic","string","int"],es:["char","logic","string","int"],pt:["char","logic","string","int"],de:["char","logic","string","int"],ja:["char","logic","string","int"],ko:["char","logic","string","int"],hi:["char","logic","string","int"]},
+      correct:2,
+      explain:{fr:"string représente une chaîne de caractères, du texte.",en:"string represents a sequence of characters — text.",es:"string representa una cadena de caracteres, texto.",pt:"string representa uma sequência de caracteres, texto.",de:"string steht für eine Zeichenkette, also Text.",ja:"stringは文字の並び、つまりテキストを表します。",ko:"string은 문자들의 나열, 즉 텍스트를 나타냅니다.",hi:"string अक्षरों की एक श्रृंखला यानी टेक्स्ट दर्शाता है।"}
+    },
+    { type:'mcq',
+      prompt:{fr:"Quel type utiliser pour une valeur vrai / faux, comme 'la partie est-elle terminée ?'",en:"Which type would you use for a true/false value, like 'is the game over?'",es:"¿Qué tipo usarías para un valor verdadero/falso, como '¿terminó la partida?'",pt:"Que tipo você usaria para um valor verdadeiro/falso, como 'o jogo acabou?'",de:"Welchen Typ würdest du für einen Wahr/Falsch-Wert wie 'ist das Spiel vorbei?' verwenden?",ja:"「ゲームは終了したか？」のような真偽値にはどの型を使いますか？",ko:"'게임이 끝났는가?' 같은 참/거짓 값에는 어떤 타입을 쓰나요?",hi:"'क्या गेम खत्म हो गया?' जैसे सही/गलत मान के लिए कौन-सा टाइप इस्तेमाल करेंगे?"},
+      options:{fr:["bool","logic","int","flag"],en:["bool","logic","int","flag"],es:["bool","logic","int","flag"],pt:["bool","logic","int","flag"],de:["bool","logic","int","flag"],ja:["bool","logic","int","flag"],ko:["bool","logic","int","flag"],hi:["bool","logic","int","flag"]},
+      correct:1,
+      explain:{fr:"Attention, contrairement à beaucoup de langages, Verse utilise logic (et non bool) pour les valeurs true / false.",en:"Unlike most languages, Verse uses logic (not bool) for true/false values.",es:"A diferencia de muchos lenguajes, Verse usa logic (no bool) para los valores true/false.",pt:"Diferente de muitas linguagens, Verse usa logic (não bool) para valores true/false.",de:"Anders als in vielen Sprachen verwendet Verse logic (nicht bool) für true/false-Werte.",ja:"多くの言語と違い、Verseはtrue/falseの値にbool ではなくlogicを使います。",ko:"많은 언어와 달리 Verse는 true/false 값에 bool이 아니라 logic을 씁니다.",hi:"कई भाषाओं के विपरीत, Verse true/false के लिए bool नहीं बल्कि logic इस्तेमाल करता है।"}
+    },
+    { type:'fill',
+      prompt:{fr:"Complète le type manquant pour cette constante de type texte.",en:"Fill in the missing type for this text constant.",es:"Completa el tipo que falta para esta constante de texto.",pt:"Complete o tipo que falta para essa constante de texto.",de:"Ergänze den fehlenden Typ für diese Text-Konstante.",ja:"このテキスト定数に足りない型を入力してください。",ko:"이 텍스트 상수에 빠진 타입을 채워 넣으세요.",hi:"इस टेक्स्ट स्थिरांक के लिए बचा हुआ टाइप भरें।"},
+      codeBefore:"PlayerName : ",
+      blankHint:{fr:"type",en:"type",es:"tipo",pt:"tipo",de:"Typ",ja:"型",ko:"타입",hi:"टाइप"},
+      codeAfter:" = \"Ninja\"", answers:["string"],
+      explain:{fr:"\"Ninja\" est une chaîne de caractères, donc son type est string.",en:"\"Ninja\" is a string of characters, so its type is string.",es:"\"Ninja\" es una cadena de caracteres, así que su tipo es string.",pt:"\"Ninja\" é uma sequência de caracteres, então seu tipo é string.",de:"\"Ninja\" ist eine Zeichenkette, also ist ihr Typ string.",ja:"\"Ninja\"は文字列なので、型はstringです。",ko:"\"Ninja\"는 문자열이므로 타입은 string입니다.",hi:"\"Ninja\" एक अक्षर-श्रृंखला है, इसलिए इसका टाइप string है।"}
+    },
+    { type:'mcq',
+      prompt:{fr:"Quelle déclaration est correcte pour une variable IsAlive, vraie par défaut, modifiable plus tard ?",en:"Which declaration is correct for an IsAlive variable, true by default, changeable later?",es:"¿Qué declaración es correcta para una variable IsAlive, verdadera por defecto, modificable después?",pt:"Qual declaração é correta para uma variável IsAlive, verdadeira por padrão, modificável depois?",de:"Welche Deklaration ist korrekt für eine Variable IsAlive, standardmäßig wahr, später änderbar?",ja:"デフォルトでtrue、後で変更可能なIsAlive変数の正しい宣言は？",ko:"기본값이 true이고 나중에 바꿀 수 있는 IsAlive 변수의 올바른 선언은?",hi:"IsAlive वेरिएबल के लिए सही घोषणा कौन-सी है, जो डिफ़ॉल्ट रूप से सही हो और बाद में बदली जा सके?"},
+      options:{
+        fr:["var IsAlive : logic = true","IsAlive : bool = true","var IsAlive : logic = 1","logic IsAlive = true"],
+        en:["var IsAlive : logic = true","IsAlive : bool = true","var IsAlive : logic = 1","logic IsAlive = true"],
+        es:["var IsAlive : logic = true","IsAlive : bool = true","var IsAlive : logic = 1","logic IsAlive = true"],
+        pt:["var IsAlive : logic = true","IsAlive : bool = true","var IsAlive : logic = 1","logic IsAlive = true"],
+        de:["var IsAlive : logic = true","IsAlive : bool = true","var IsAlive : logic = 1","logic IsAlive = true"],
+        ja:["var IsAlive : logic = true","IsAlive : bool = true","var IsAlive : logic = 1","logic IsAlive = true"],
+        ko:["var IsAlive : logic = true","IsAlive : bool = true","var IsAlive : logic = 1","logic IsAlive = true"],
+        hi:["var IsAlive : logic = true","IsAlive : bool = true","var IsAlive : logic = 1","logic IsAlive = true"]
+      },
+      correct:0,
+      explain:{fr:"var pour rendre la variable modifiable, logic comme type, et true / false (pas 0/1) comme valeurs.",en:"var to make it modifiable, logic as the type, and true / false (not 0/1) as values.",es:"var para hacerla modificable, logic como tipo, y true/false (no 0/1) como valores.",pt:"var para torná-la modificável, logic como tipo, e true/false (não 0/1) como valores.",de:"var macht sie veränderbar, logic ist der Typ, und true/false (nicht 0/1) sind die Werte.",ja:"varで変更可能にし、型はlogic、値はtrue/false（0/1ではない）です。",ko:"var로 변경 가능하게 하고, 타입은 logic, 값은 true/false(0/1이 아님)입니다.",hi:"var इसे बदलने योग्य बनाता है, logic टाइप है, और true/false (0/1 नहीं) मान हैं।"}
+    },
+    { type:'fill',
+      prompt:{fr:"Complète le type pour cette constante représentant une distance de saut.",en:"Fill in the type for this constant representing a jump distance.",es:"Completa el tipo para esta constante que representa una distancia de salto.",pt:"Complete o tipo para essa constante que representa uma distância de pulo.",de:"Ergänze den Typ für diese Konstante, die eine Sprungdistanz darstellt.",ja:"ジャンプ距離を表すこの定数の型を入力してください。",ko:"점프 거리를 나타내는 이 상수의 타입을 채워 넣으세요.",hi:"जंप डिस्टेंस दर्शाने वाले इस स्थिरांक के लिए टाइप भरें।"},
+      codeBefore:"JumpHeight : ",
+      blankHint:{fr:"type",en:"type",es:"tipo",pt:"tipo",de:"Typ",ja:"型",ko:"타입",hi:"टाइप"},
+      codeAfter:" = 4.8", answers:["float"],
+      explain:{fr:"4.8 est un nombre à virgule : son type est float.",en:"4.8 is a decimal number: its type is float.",es:"4.8 es un número decimal: su tipo es float.",pt:"4.8 é um número decimal: seu tipo é float.",de:"4.8 ist eine Dezimalzahl: ihr Typ ist float.",ja:"4.8は小数なので、型はfloatです。",ko:"4.8은 소수이므로 타입은 float입니다.",hi:"4.8 एक दशमलव संख्या है: इसका टाइप float है।"}
+    },
+    { type:'mcq',
+      prompt:{fr:"Quelle est la principale différence entre logic et int en Verse ?",en:"What's the main difference between logic and int in Verse?",es:"¿Cuál es la principal diferencia entre logic e int en Verse?",pt:"Qual é a principal diferença entre logic e int em Verse?",de:"Was ist der Hauptunterschied zwischen logic und int in Verse?",ja:"Verseにおけるlogicとintの主な違いは？",ko:"Verse에서 logic과 int의 주요 차이는 무엇인가요?",hi:"Verse में logic और int के बीच मुख्य अंतर क्या है?"},
+      options:{
+        fr:["Aucune, ce sont des synonymes","logic ne contient que true/false, int contient des nombres entiers","int est plus rapide que logic","logic est un type de texte"],
+        en:["None, they're synonyms","logic only holds true/false, int holds whole numbers","int is faster than logic","logic is a text type"],
+        es:["Ninguna, son sinónimos","logic solo contiene true/false, int contiene números enteros","int es más rápido que logic","logic es un tipo de texto"],
+        pt:["Nenhuma, são sinônimos","logic só guarda true/false, int guarda números inteiros","int é mais rápido que logic","logic é um tipo de texto"],
+        de:["Keiner, sie sind Synonyme","logic enthält nur true/false, int enthält ganze Zahlen","int ist schneller als logic","logic ist ein Texttyp"],
+        ja:["違いはない、同義語","logicはtrue/falseのみ、intは整数を保持する","intはlogicより高速","logicはテキスト型"],
+        ko:["차이 없음, 동의어","logic은 true/false만, int는 정수를 가짐","int가 logic보다 빠름","logic은 텍스트 타입"],
+        hi:["कोई नहीं, ये पर्यायवाची हैं","logic केवल true/false रखता है, int पूर्णांक रखता है","int, logic से तेज़ है","logic एक टेक्स्ट टाइप है"]
+      },
+      correct:1,
+      explain:{fr:"logic est réservé aux valeurs booléennes (true/false), tandis que int stocke des nombres entiers.",en:"logic is reserved for boolean values (true/false), while int stores whole numbers.",es:"logic está reservado para valores booleanos (true/false), mientras que int guarda números enteros.",pt:"logic é reservado para valores booleanos (true/false), enquanto int guarda números inteiros.",de:"logic ist für boolesche Werte (true/false) reserviert, während int ganze Zahlen speichert.",ja:"logicは真偽値（true/false）専用で、intは整数を格納します。",ko:"logic은 불리언 값(true/false) 전용이고, int는 정수를 저장합니다.",hi:"logic बूलियन मानों (true/false) के लिए है, जबकि int पूर्णांक संग्रहीत करता है।"}
+    }
+  ]
+},
+{
+  id:'u3', num:3,
+  title:{fr:'Fonctions',en:'Functions',es:'Funciones',pt:'Funções',de:'Funktionen',ja:'関数',ko:'함수',hi:'फ़ंक्शन'},
+  subtitle:{fr:'déclarer, appeler, retourner',en:'declare, call, return',es:'declarar, llamar, retornar',pt:'declarar, chamar, retornar',de:'deklarieren, aufrufen, zurückgeben',ja:'宣言、呼び出し、戻り値',ko:'선언, 호출, 반환',hi:'घोषित करना, कॉल करना, रिटर्न करना'},
+  lesson:{
+    fr:"Une fonction se déclare avec Nom(Paramètres) : TypeDeRetour = Corps. Chaque paramètre a un nom et un type, séparés par ':'. La dernière expression évaluée dans le corps est automatiquement renvoyée comme résultat, sans avoir besoin d'écrire 'return' (ce mot-clé existe surtout pour sortir plus tôt d'une fonction).",
+    en:"A function is declared as Name(Parameters) : ReturnType = Body. Each parameter has a name and type, separated by ':'. The last expression evaluated in the body is automatically returned as the result, with no need to write 'return' (that keyword mainly exists to exit a function early).",
+    es:"Una función se declara con Nombre(Parámetros) : TipoDeRetorno = Cuerpo. Cada parámetro tiene un nombre y un tipo, separados por ':'. La última expresión evaluada en el cuerpo se devuelve automáticamente como resultado, sin necesidad de escribir 'return' (esa palabra clave existe sobre todo para salir antes de una función).",
+    pt:"Uma função se declara como Nome(Parâmetros) : TipoDeRetorno = Corpo. Cada parâmetro tem um nome e um tipo, separados por ':'. A última expressão avaliada no corpo é automaticamente retornada como resultado, sem precisar escrever 'return' (essa palavra-chave existe principalmente para sair antes de uma função).",
+    de:"Eine Funktion wird als Name(Parameter) : Rückgabetyp = Rumpf deklariert. Jeder Parameter hat einen Namen und Typ, getrennt durch ':'. Der letzte ausgewertete Ausdruck im Rumpf wird automatisch als Ergebnis zurückgegeben, ohne 'return' schreiben zu müssen (dieses Schlüsselwort dient vor allem dazu, eine Funktion vorzeitig zu verlassen).",
+    ja:"関数は「名前(パラメータ) : 戻り値の型 = 本体」の形で宣言します。各パラメータは名前と型を':'で区切って持ちます。本体で最後に評価された式が自動的に結果として返され、'return'を書く必要はありません（このキーワードは主に関数を早期終了するために存在します）。",
+    ko:"함수는 이름(매개변수) : 반환타입 = 본문 형태로 선언합니다. 각 매개변수는 이름과 타입을 ':'로 구분해 가집니다. 본문에서 마지막으로 평가된 식이 자동으로 결과로 반환되며, 'return'을 쓸 필요가 없습니다(이 키워드는 주로 함수를 조기 종료할 때 씁니다).",
+    hi:"एक फ़ंक्शन को Name(Parameters) : ReturnType = Body के रूप में घोषित किया जाता है। हर पैरामीटर का एक नाम और टाइप होता है, जो ':' से अलग होते हैं। Body में आख़िरी मूल्यांकित एक्सप्रेशन अपने आप परिणाम के रूप में लौटाया जाता है, 'return' लिखने की ज़रूरत नहीं (यह कीवर्ड मुख्यतः फ़ंक्शन से जल्दी बाहर निकलने के लिए है)।"
+  },
+  lessonCode:{
+    fr:"Add(X : int, Y : int) : int = X + Y\n\nResult : int = Add(2, 3)   # Result vaut 5",
+    en:"Add(X : int, Y : int) : int = X + Y\n\nResult : int = Add(2, 3)   # Result equals 5",
+    es:"Add(X : int, Y : int) : int = X + Y\n\nResult : int = Add(2, 3)   # Result vale 5",
+    pt:"Add(X : int, Y : int) : int = X + Y\n\nResult : int = Add(2, 3)   # Result vale 5",
+    de:"Add(X : int, Y : int) : int = X + Y\n\nResult : int = Add(2, 3)   # Result ist 5",
+    ja:"Add(X : int, Y : int) : int = X + Y\n\nResult : int = Add(2, 3)   # Result は 5",
+    ko:"Add(X : int, Y : int) : int = X + Y\n\nResult : int = Add(2, 3)   # Result 는 5",
+    hi:"Add(X : int, Y : int) : int = X + Y\n\nResult : int = Add(2, 3)   # Result का मान 5 है"
+  },
+  exercises: [
+    { type:'mcq',
+      prompt:{fr:"Quelle est la bonne syntaxe pour une fonction Add qui prend deux int et renvoie un int ?",en:"What's the correct syntax for an Add function that takes two ints and returns an int?",es:"¿Cuál es la sintaxis correcta para una función Add que toma dos int y devuelve un int?",pt:"Qual é a sintaxe correta para uma função Add que recebe dois int e retorna um int?",de:"Was ist die korrekte Syntax für eine Funktion Add, die zwei int nimmt und ein int zurückgibt?",ja:"2つのintを受け取りintを返す関数Addの正しい構文は？",ko:"두 개의 int를 받아 int를 반환하는 Add 함수의 올바른 문법은?",hi:"दो int लेने और एक int लौटाने वाले Add फ़ंक्शन का सही सिंटैक्स क्या है?"},
+      options:{
+        fr:["Add(X : int, Y : int) : int = X + Y","function Add(X, Y) { return X + Y }","Add(X: int, Y: int) -> int { X + Y }","def Add(X: int, Y: int): int = X + Y"],
+        en:["Add(X : int, Y : int) : int = X + Y","function Add(X, Y) { return X + Y }","Add(X: int, Y: int) -> int { X + Y }","def Add(X: int, Y: int): int = X + Y"],
+        es:["Add(X : int, Y : int) : int = X + Y","function Add(X, Y) { return X + Y }","Add(X: int, Y: int) -> int { X + Y }","def Add(X: int, Y: int): int = X + Y"],
+        pt:["Add(X : int, Y : int) : int = X + Y","function Add(X, Y) { return X + Y }","Add(X: int, Y: int) -> int { X + Y }","def Add(X: int, Y: int): int = X + Y"],
+        de:["Add(X : int, Y : int) : int = X + Y","function Add(X, Y) { return X + Y }","Add(X: int, Y: int) -> int { X + Y }","def Add(X: int, Y: int): int = X + Y"],
+        ja:["Add(X : int, Y : int) : int = X + Y","function Add(X, Y) { return X + Y }","Add(X: int, Y: int) -> int { X + Y }","def Add(X: int, Y: int): int = X + Y"],
+        ko:["Add(X : int, Y : int) : int = X + Y","function Add(X, Y) { return X + Y }","Add(X: int, Y: int) -> int { X + Y }","def Add(X: int, Y: int): int = X + Y"],
+        hi:["Add(X : int, Y : int) : int = X + Y","function Add(X, Y) { return X + Y }","Add(X: int, Y: int) -> int { X + Y }","def Add(X: int, Y: int): int = X + Y"]
+      },
+      correct:0,
+      explain:{fr:"En Verse : Nom(Paramètres) : TypeDeRetour = Corps. Ici, X + Y est directement la valeur renvoyée.",en:"In Verse: Name(Parameters) : ReturnType = Body. Here, X + Y is directly the returned value.",es:"En Verse: Nombre(Parámetros) : TipoDeRetorno = Cuerpo. Aquí, X + Y es directamente el valor devuelto.",pt:"Em Verse: Nome(Parâmetros) : TipoDeRetorno = Corpo. Aqui, X + Y é diretamente o valor retornado.",de:"In Verse: Name(Parameter) : Rückgabetyp = Rumpf. Hier ist X + Y direkt der zurückgegebene Wert.",ja:"Verseでは：名前(パラメータ) : 戻り値の型 = 本体。ここではX + Yがそのまま戻り値です。",ko:"Verse에서: 이름(매개변수) : 반환타입 = 본문. 여기서 X + Y가 바로 반환값입니다.",hi:"Verse में: Name(Parameters) : ReturnType = Body। यहाँ X + Y सीधे लौटाया गया मान है।"}
+    },
+    { type:'mcq',
+      prompt:{fr:"Faut-il écrire explicitement 'return' pour renvoyer une valeur en Verse ?",en:"Do you need to explicitly write 'return' to return a value in Verse?",es:"¿Hay que escribir explícitamente 'return' para devolver un valor en Verse?",pt:"É preciso escrever explicitamente 'return' para retornar um valor em Verse?",de:"Muss man in Verse explizit 'return' schreiben, um einen Wert zurückzugeben?",ja:"Verseで値を返すには明示的に'return'を書く必要がありますか？",ko:"Verse에서 값을 반환하려면 명시적으로 'return'을 써야 하나요?",hi:"क्या Verse में मान लौटाने के लिए स्पष्ट रूप से 'return' लिखना ज़रूरी है?"},
+      options:{
+        fr:["Oui, toujours obligatoire","Non, la dernière expression du bloc est renvoyée automatiquement","Seulement pour les fonctions qui renvoient un int","Uniquement dans les classes"],
+        en:["Yes, always required","No, the last expression in the block is returned automatically","Only for functions that return an int","Only inside classes"],
+        es:["Sí, siempre obligatorio","No, la última expresión del bloque se devuelve automáticamente","Solo para funciones que devuelven un int","Solo dentro de clases"],
+        pt:["Sim, sempre obrigatório","Não, a última expressão do bloco é retornada automaticamente","Só para funções que retornam um int","Só dentro de classes"],
+        de:["Ja, immer erforderlich","Nein, der letzte Ausdruck im Block wird automatisch zurückgegeben","Nur für Funktionen, die ein int zurückgeben","Nur innerhalb von Klassen"],
+        ja:["はい、常に必須","いいえ、ブロックの最後の式が自動的に返される","intを返す関数のみ","クラス内のみ"],
+        ko:["예, 항상 필요","아니요, 블록의 마지막 식이 자동으로 반환됨","int를 반환하는 함수만","클래스 안에서만"],
+        hi:["हाँ, हमेशा ज़रूरी","नहीं, ब्लॉक का आख़िरी एक्सप्रेशन अपने आप लौटाया जाता है","केवल int लौटाने वाले फ़ंक्शन के लिए","केवल क्लास के अंदर"]
+      },
+      correct:1,
+      explain:{fr:"Verse renvoie automatiquement la valeur de la dernière expression évaluée. 'return' existe surtout pour sortir plus tôt d'une fonction.",en:"Verse automatically returns the value of the last evaluated expression. 'return' mostly exists to exit a function early.",es:"Verse devuelve automáticamente el valor de la última expresión evaluada. 'return' existe sobre todo para salir antes de una función.",pt:"Verse retorna automaticamente o valor da última expressão avaliada. 'return' existe principalmente para sair antes de uma função.",de:"Verse gibt automatisch den Wert des letzten ausgewerteten Ausdrucks zurück. 'return' dient vor allem dem vorzeitigen Verlassen.",ja:"Verseは最後に評価された式の値を自動的に返します。'return'は主に関数を早期終了するために存在します。",ko:"Verse는 마지막으로 평가된 식의 값을 자동으로 반환합니다. 'return'은 주로 함수를 조기 종료할 때 씁니다.",hi:"Verse आख़िरी मूल्यांकित एक्सप्रेशन का मान अपने आप लौटाता है। 'return' मुख्यतः फ़ंक्शन से जल्दी निकलने के लिए है।"}
+    },
+    { type:'fill',
+      prompt:{fr:"Complète le type du second paramètre pour que la fonction compile.",en:"Fill in the second parameter's type so the function compiles.",es:"Completa el tipo del segundo parámetro para que la función compile.",pt:"Complete o tipo do segundo parâmetro para que a função compile.",de:"Ergänze den Typ des zweiten Parameters, damit die Funktion kompiliert.",ja:"関数がコンパイルできるよう、2つ目のパラメータの型を入力してください。",ko:"함수가 컴파일되도록 두 번째 매개변수의 타입을 채워 넣으세요.",hi:"फ़ंक्शन कंपाइल हो सके इसके लिए दूसरे पैरामीटर का टाइप भरें।"},
+      codeBefore:"Multiply(X : float, Y : ",
+      blankHint:{fr:"type",en:"type",es:"tipo",pt:"tipo",de:"Typ",ja:"型",ko:"타입",hi:"टाइप"},
+      codeAfter:") : float = X * Y", answers:["float"],
+      explain:{fr:"Les deux paramètres doivent être du même type pour être multipliés ensemble ici : float.",en:"Both parameters need the same type to be multiplied together here: float.",es:"Ambos parámetros deben tener el mismo tipo para multiplicarse: float.",pt:"Os dois parâmetros precisam do mesmo tipo para serem multiplicados: float.",de:"Beide Parameter müssen denselben Typ haben, um multipliziert zu werden: float.",ja:"両方のパラメータは掛け算できるよう同じ型（float）である必要があります。",ko:"두 매개변수는 곱하려면 같은 타입(float)이어야 합니다.",hi:"दोनों पैरामीटर को गुणा करने के लिए एक ही टाइप चाहिए: float।"}
+    },
+    { type:'mcq',
+      prompt:{fr:"En reprenant la fonction Add définie plus haut, quelle ligne l'appelle correctement ?",en:"Using the Add function defined above, which line calls it correctly?",es:"Usando la función Add definida arriba, ¿qué línea la llama correctamente?",pt:"Usando a função Add definida acima, qual linha a chama corretamente?",de:"Mit der oben definierten Funktion Add: Welche Zeile ruft sie korrekt auf?",ja:"上で定義したAdd関数を正しく呼び出す行はどれですか？",ko:"위에서 정의한 Add 함수를 올바르게 호출하는 줄은?",hi:"ऊपर परिभाषित Add फ़ंक्शन को सही तरीके से कौन-सी लाइन कॉल करती है?"},
+      options:{fr:["Add(2, 3)","call Add(2, 3)","Add[2, 3]","Add: 2, 3"],en:["Add(2, 3)","call Add(2, 3)","Add[2, 3]","Add: 2, 3"],es:["Add(2, 3)","call Add(2, 3)","Add[2, 3]","Add: 2, 3"],pt:["Add(2, 3)","call Add(2, 3)","Add[2, 3]","Add: 2, 3"],de:["Add(2, 3)","call Add(2, 3)","Add[2, 3]","Add: 2, 3"],ja:["Add(2, 3)","call Add(2, 3)","Add[2, 3]","Add: 2, 3"],ko:["Add(2, 3)","call Add(2, 3)","Add[2, 3]","Add: 2, 3"],hi:["Add(2, 3)","call Add(2, 3)","Add[2, 3]","Add: 2, 3"]},
+      correct:0,
+      explain:{fr:"On appelle une fonction en Verse comme dans la plupart des langages : NomDeLaFonction(arguments).",en:"You call a function in Verse like in most languages: FunctionName(arguments).",es:"Se llama a una función en Verse como en la mayoría de lenguajes: NombreDeLaFunción(argumentos).",pt:"Chama-se uma função em Verse como na maioria das linguagens: NomeDaFunção(argumentos).",de:"Man ruft eine Funktion in Verse wie in den meisten Sprachen auf: Funktionsname(Argumente).",ja:"Verseでの関数呼び出しは他の多くの言語と同様：関数名(引数)。",ko:"Verse에서 함수 호출은 대부분의 언어처럼: 함수이름(인자).",hi:"Verse में फ़ंक्शन को अधिकांश भाषाओं की तरह कॉल किया जाता है: FunctionName(arguments)।"}
+    },
+    { type:'fill',
+      prompt:{fr:"Complète le type de retour manquant : cette fonction renvoie du texte.",en:"Fill in the missing return type: this function returns text.",es:"Completa el tipo de retorno que falta: esta función devuelve texto.",pt:"Complete o tipo de retorno que falta: essa função retorna texto.",de:"Ergänze den fehlenden Rückgabetyp: diese Funktion gibt Text zurück.",ja:"足りない戻り値の型を入力してください：この関数はテキストを返します。",ko:"빠진 반환 타입을 채워 넣으세요: 이 함수는 텍스트를 반환합니다.",hi:"बचा हुआ रिटर्न टाइप भरें: यह फ़ंक्शन टेक्स्ट लौटाता है।"},
+      codeBefore:"Greet(Name : string) : ",
+      blankHint:{fr:"type",en:"type",es:"tipo",pt:"tipo",de:"Typ",ja:"型",ko:"타입",hi:"टाइप"},
+      codeAfter:" = \"Bienvenue !\"", answers:["string"],
+      explain:{fr:"La fonction renvoie \"Bienvenue !\", une chaîne de caractères : son type de retour est donc string.",en:"The function returns \"Bienvenue !\", a string: so its return type is string.",es:"La función devuelve \"Bienvenue !\", una cadena de texto: su tipo de retorno es string.",pt:"A função retorna \"Bienvenue !\", uma string: seu tipo de retorno é string.",de:"Die Funktion gibt \"Bienvenue !\" zurück, eine Zeichenkette: ihr Rückgabetyp ist also string.",ja:"この関数は\"Bienvenue !\"という文字列を返すので、戻り値の型はstringです。",ko:"이 함수는 \"Bienvenue !\"라는 문자열을 반환하므로 반환 타입은 string입니다.",hi:"यह फ़ंक्शन \"Bienvenue !\" लौटाता है, जो एक string है: इसलिए इसका रिटर्न टाइप string है।"}
+    },
+    { type:'mcq',
+      prompt:{fr:"Dans 'Greet(Name : string) : string = ...', à quoi sert le second ':' (avant le '=') ?",en:"In 'Greet(Name : string) : string = ...', what is the second ':' (before the '=') for?",es:"En 'Greet(Name : string) : string = ...', ¿para qué sirve el segundo ':' (antes del '=')?",pt:"Em 'Greet(Name : string) : string = ...', para que serve o segundo ':' (antes do '=')?",de:"Wofür steht in 'Greet(Name : string) : string = ...' das zweite ':' (vor dem '=')?",ja:"'Greet(Name : string) : string = ...' の2つ目の':'（'='の前）は何のため？",ko:"'Greet(Name : string) : string = ...'에서 두 번째 ':'('=' 앞)는 무슨 역할인가요?",hi:"'Greet(Name : string) : string = ...' में दूसरा ':' ('=' से पहले) किसलिए है?"},
+      options:{
+        fr:["Il sépare les paramètres du type de retour de la fonction","Il sépare le nom du paramètre","Il indique un commentaire","Il déclare une nouvelle variable"],
+        en:["It separates the parameters from the function's return type","It separates the parameter name","It marks a comment","It declares a new variable"],
+        es:["Separa los parámetros del tipo de retorno de la función","Separa el nombre del parámetro","Marca un comentario","Declara una nueva variable"],
+        pt:["Separa os parâmetros do tipo de retorno da função","Separa o nome do parâmetro","Marca um comentário","Declara uma nova variável"],
+        de:["Trennt die Parameter vom Rückgabetyp der Funktion","Trennt den Parameternamen","Kennzeichnet einen Kommentar","Deklariert eine neue Variable"],
+        ja:["パラメータと関数の戻り値の型を区切る","パラメータ名を区切る","コメントを示す","新しい変数を宣言する"],
+        ko:["매개변수와 함수의 반환 타입을 구분함","매개변수 이름을 구분함","주석을 나타냄","새 변수를 선언함"],
+        hi:["पैरामीटर को फ़ंक्शन के रिटर्न टाइप से अलग करता है","पैरामीटर के नाम को अलग करता है","कमेंट दिखाता है","नई वेरिएबल घोषित करता है"]
+      },
+      correct:0,
+      explain:{fr:"Structure générale : Nom(Paramètres) : TypeDeRetour = Corps. Le second ':' introduit ce que la fonction va renvoyer.",en:"General structure: Name(Parameters) : ReturnType = Body. The second ':' introduces what the function will return.",es:"Estructura general: Nombre(Parámetros) : TipoDeRetorno = Cuerpo. El segundo ':' introduce lo que la función devolverá.",pt:"Estrutura geral: Nome(Parâmetros) : TipoDeRetorno = Corpo. O segundo ':' introduz o que a função vai retornar.",de:"Allgemeine Struktur: Name(Parameter) : Rückgabetyp = Rumpf. Das zweite ':' leitet ein, was die Funktion zurückgibt.",ja:"一般構造：名前(パラメータ) : 戻り値の型 = 本体。2つ目の':'は関数が返すものを示します。",ko:"일반 구조: 이름(매개변수) : 반환타입 = 본문. 두 번째 ':'는 함수가 반환할 것을 나타냅니다.",hi:"सामान्य संरचना: Name(Parameters) : ReturnType = Body। दूसरा ':' बताता है कि फ़ंक्शन क्या लौटाएगा।"}
+    },
+    { type:'mcq',
+      prompt:{fr:"Double(X : int) : int = X * 2. Que renvoie Double(5) ?",en:"Double(X : int) : int = X * 2. What does Double(5) return?",es:"Double(X : int) : int = X * 2. ¿Qué devuelve Double(5)?",pt:"Double(X : int) : int = X * 2. O que Double(5) retorna?",de:"Double(X : int) : int = X * 2. Was gibt Double(5) zurück?",ja:"Double(X : int) : int = X * 2。Double(5)は何を返しますか？",ko:"Double(X : int) : int = X * 2. Double(5)는 무엇을 반환하나요?",hi:"Double(X : int) : int = X * 2। Double(5) क्या लौटाता है?"},
+      options:{fr:["5","10","25","Erreur"],en:["5","10","25","Error"],es:["5","10","25","Error"],pt:["5","10","25","Erro"],de:["5","10","25","Fehler"],ja:["5","10","25","エラー"],ko:["5","10","25","오류"],hi:["5","10","25","एरर"]},
+      correct:1,
+      explain:{fr:"X * 2 avec X = 5 vaut 10, et c'est la dernière (et seule) expression du corps : c'est donc la valeur renvoyée.",en:"X * 2 with X = 5 is 10, and that's the last (and only) expression in the body — so that's the returned value.",es:"X * 2 con X = 5 es 10, y es la última (y única) expresión del cuerpo: por tanto es el valor devuelto.",pt:"X * 2 com X = 5 é 10, e essa é a última (e única) expressão do corpo: é o valor retornado.",de:"X * 2 mit X = 5 ergibt 10, und das ist der letzte (und einzige) Ausdruck im Rumpf — also der Rückgabewert.",ja:"X = 5でX * 2は10になり、それが本体の最後（唯一）の式なので、戻り値になります。",ko:"X = 5일 때 X * 2는 10이며, 이것이 본문의 마지막(유일한) 식이므로 반환값입니다.",hi:"X = 5 पर X * 2 का मान 10 है, और यह body का आख़िरी (और एकमात्र) एक्सप्रेशन है — इसलिए यही रिटर्न वैल्यू है।"}
+    }
+  ]
+},
+{
+  id:'u4', num:4,
+  title:{fr:'Conditions',en:'Conditionals',es:'Condicionales',pt:'Condicionais',de:'Bedingungen',ja:'条件分岐',ko:'조건문',hi:'शर्तें'},
+  subtitle:{fr:'if, else, logic',en:'if, else, logic',es:'if, else, logic',pt:'if, else, logic',de:'if, else, logic',ja:'if、else、logic',ko:'if, else, logic',hi:'if, else, logic'},
+  lesson:{
+    fr:"Un bloc if (Condition): s'exécute seulement si Condition vaut true (ou si une expression faillible réussit — voir plus tard). On peut ajouter un else: pour le cas contraire. Contrairement à d'autres langages, il n'y a pas de simple 0/1 comme condition : il faut une valeur logic ou une expression faillible.",
+    en:"An if (Condition): block only runs if Condition is true (or if a failable expression succeeds — more on that later). You can add an else: for the opposite case. Unlike some languages, there's no plain 0/1 as a condition: you need a logic value or a failable expression.",
+    es:"Un bloque if (Condición): se ejecuta solo si Condición es true (o si una expresión faillible tiene éxito — lo veremos más adelante). Se puede añadir un else: para el caso contrario. A diferencia de otros lenguajes, no existe un simple 0/1 como condición: se necesita un valor logic o una expresión faillible.",
+    pt:"Um bloco if (Condição): só executa se Condição for true (ou se uma expressão faillible tiver sucesso — veremos mais adiante). Você pode adicionar um else: para o caso contrário. Diferente de outras linguagens, não existe um simples 0/1 como condição: é preciso um valor logic ou uma expressão faillible.",
+    de:"Ein if (Bedingung):-Block läuft nur, wenn Bedingung wahr ist (oder ein failable Ausdruck erfolgreich ist — dazu später mehr). Man kann ein else: für den anderen Fall hinzufügen. Anders als in anderen Sprachen gibt es kein einfaches 0/1 als Bedingung: man braucht einen logic-Wert oder einen failable Ausdruck.",
+    ja:"if (条件): ブロックは条件がtrueのとき（あるいは失敗する可能性のある式が成功したとき — 後述）だけ実行されます。else: で反対の場合を追加できます。他の言語と違い、単純な0/1を条件にはできません。logic値か失敗しうる式が必要です。",
+    ko:"if (조건): 블록은 조건이 true일 때(또는 실패 가능한 표현식이 성공할 때 — 나중에 설명)만 실행됩니다. else:로 반대의 경우를 추가할 수 있습니다. 다른 언어와 달리 단순한 0/1을 조건으로 쓸 수 없습니다: logic 값이나 실패 가능한 표현식이 필요합니다.",
+    hi:"if (Condition): ब्लॉक तभी चलता है जब Condition true हो (या कोई असफल हो सकने वाला एक्सप्रेशन सफल हो — बाद में बताएंगे)। इसके विपरीत स्थिति के लिए else: जोड़ सकते हैं। दूसरी भाषाओं के विपरीत, सिर्फ़ 0/1 शर्त के तौर पर नहीं चलता: logic मान या असफल हो सकने वाला एक्सप्रेशन चाहिए।"
+  },
+  lessonCode:{
+    fr:"if (Score >= 100):\n    Print(\"Bravo !\")\nelse:\n    Print(\"Continue...\")",
+    en:"if (Score >= 100):\n    Print(\"Nice!\")\nelse:\n    Print(\"Keep going...\")",
+    es:"if (Score >= 100):\n    Print(\"¡Bien hecho!\")\nelse:\n    Print(\"Sigue así...\")",
+    pt:"if (Score >= 100):\n    Print(\"Muito bem!\")\nelse:\n    Print(\"Continue...\")",
+    de:"if (Score >= 100):\n    Print(\"Gut gemacht!\")\nelse:\n    Print(\"Weiter so...\")",
+    ja:"if (Score >= 100):\n    Print(\"よくできました！\")\nelse:\n    Print(\"続けよう...\")",
+    ko:"if (Score >= 100):\n    Print(\"잘했어요!\")\nelse:\n    Print(\"계속해봐요...\")",
+    hi:"if (Score >= 100):\n    Print(\"शाबाश!\")\nelse:\n    Print(\"जारी रखें...\")"
+  },
+  exercises: [
+    { type:'mcq',
+      prompt:{fr:"Quelle structure permet d'exécuter du code seulement si une condition logic est vraie ?",en:"Which structure runs code only if a logic condition is true?",es:"¿Qué estructura ejecuta código solo si una condición logic es verdadera?",pt:"Qual estrutura executa código só se uma condição logic for verdadeira?",de:"Welche Struktur führt Code nur aus, wenn eine logic-Bedingung wahr ist?",ja:"logic条件がtrueのときだけコードを実行する構造は？",ko:"logic 조건이 참일 때만 코드를 실행하는 구조는?",hi:"कौन-सी संरचना केवल तभी कोड चलाती है जब कोई logic शर्त सही हो?"},
+      code:"if (Score >= 100):\n    Print(\"Bien joué !\")",
+      options:{fr:["if (Condition):","when (Condition):","check (Condition):","match (Condition):"],en:["if (Condition):","when (Condition):","check (Condition):","match (Condition):"],es:["if (Condition):","when (Condition):","check (Condition):","match (Condition):"],pt:["if (Condition):","when (Condition):","check (Condition):","match (Condition):"],de:["if (Condition):","when (Condition):","check (Condition):","match (Condition):"],ja:["if (Condition):","when (Condition):","check (Condition):","match (Condition):"],ko:["if (Condition):","when (Condition):","check (Condition):","match (Condition):"],hi:["if (Condition):","when (Condition):","check (Condition):","match (Condition):"]},
+      correct:0,
+      explain:{fr:"Verse utilise if suivi d'une condition entre parenthèses, puis ':' pour ouvrir le bloc indenté qui s'exécute si la condition est vraie.",en:"Verse uses if followed by a condition in parentheses, then ':' to open the indented block that runs if the condition is true.",es:"Verse usa if seguido de una condición entre paréntesis, luego ':' para abrir el bloque indentado que se ejecuta si la condición es verdadera.",pt:"Verse usa if seguido de uma condição entre parênteses, depois ':' para abrir o bloco indentado que executa se a condição for verdadeira.",de:"Verse verwendet if gefolgt von einer Bedingung in Klammern, dann ':' um den eingerückten Block zu öffnen.",ja:"Verseはifの後に括弧で条件を書き、':' で条件がtrueのときに実行されるインデントブロックを開きます。",ko:"Verse는 if 다음에 괄호로 조건을 쓰고, ':'로 조건이 참일 때 실행되는 들여쓰기 블록을 엽니다.",hi:"Verse में if के बाद कोष्ठक में शर्त लिखी जाती है, फिर ':' उस इंडेंटेड ब्लॉक को खोलता है जो शर्त सही होने पर चलता है।"}
+    },
+    { type:'mcq',
+      prompt:{fr:"Comment ajoute-t-on une branche alternative à un if, exécutée si la condition est fausse ?",en:"How do you add an alternative branch to an if, run when the condition is false?",es:"¿Cómo se añade una rama alternativa a un if, ejecutada si la condición es falsa?",pt:"Como se adiciona um ramo alternativo a um if, executado se a condição for falsa?",de:"Wie fügt man einem if einen alternativen Zweig hinzu, der bei falscher Bedingung läuft?",ja:"条件がfalseのとき実行される代替ブロックをifにどう追加しますか？",ko:"조건이 거짓일 때 실행되는 대체 분기를 if에 어떻게 추가하나요?",hi:"if में एक वैकल्पिक शाखा कैसे जोड़ें जो शर्त गलत होने पर चले?"},
+      code:"if (Score >= 100):\n    Print(\"Gagné\")\nelse:\n    Print(\"Perdu\")",
+      options:{fr:["otherwise:","else:","elif:","default:"],en:["otherwise:","else:","elif:","default:"],es:["otherwise:","else:","elif:","default:"],pt:["otherwise:","else:","elif:","default:"],de:["otherwise:","else:","elif:","default:"],ja:["otherwise:","else:","elif:","default:"],ko:["otherwise:","else:","elif:","default:"],hi:["otherwise:","else:","elif:","default:"]},
+      correct:1,
+      explain:{fr:"Comme dans beaucoup de langages, else: introduit le bloc exécuté quand la condition du if est fausse.",en:"Like in many languages, else: introduces the block that runs when the if's condition is false.",es:"Como en muchos lenguajes, else: introduce el bloque que se ejecuta cuando la condición del if es falsa.",pt:"Como em muitas linguagens, else: introduz o bloco executado quando a condição do if é falsa.",de:"Wie in vielen Sprachen leitet else: den Block ein, der bei falscher if-Bedingung läuft.",ja:"多くの言語同様、else: はifの条件がfalseのときに実行されるブロックを導入します。",ko:"많은 언어처럼 else:는 if 조건이 거짓일 때 실행되는 블록을 나타냅니다.",hi:"कई भाषाओं की तरह, else: वह ब्लॉक बताता है जो if की शर्त गलत होने पर चलता है।"}
+    },
+    { type:'fill',
+      prompt:{fr:"Complète le mot-clé manquant pour cette condition simple.",en:"Fill in the missing keyword for this simple condition.",es:"Completa la palabra clave que falta para esta condición simple.",pt:"Complete a palavra-chave que falta para essa condição simples.",de:"Ergänze das fehlende Schlüsselwort für diese einfache Bedingung.",ja:"この単純な条件に足りないキーワードを入力してください。",ko:"이 간단한 조건에 빠진 키워드를 채워 넣으세요.",hi:"इस साधारण शर्त के लिए बचा हुआ कीवर्ड भरें।"},
+      codeBefore:"",
+      blankHint:{fr:"mot-clé",en:"keyword",es:"palabra clave",pt:"palavra-chave",de:"Schlüsselwort",ja:"キーワード",ko:"키워드",hi:"कीवर्ड"},
+      codeAfter:" (IsAlive?):\n    Print(\"En vie\")", answers:["if"],
+      explain:{fr:"if introduit toujours une condition, ici testée directement sur une variable de type logic.",en:"if always introduces a condition, here tested directly on a logic-type variable.",es:"if siempre introduce una condición, aquí probada directamente sobre una variable de tipo logic.",pt:"if sempre introduz uma condição, aqui testada diretamente numa variável do tipo logic.",de:"if leitet immer eine Bedingung ein, hier direkt auf einer logic-Variable getestet.",ja:"ifは常に条件を示し、ここではlogic型の変数に直接テストしています。",ko:"if는 항상 조건을 나타내며, 여기서는 logic 타입 변수를 직접 검사합니다.",hi:"if हमेशा एक शर्त बताता है, यहाँ सीधे logic टाइप वेरिएबल पर जांचा गया है।"}
+    },
+    { type:'mcq',
+      prompt:{fr:"IsReady est de type logic et vaut false. Que fait ce code ?",en:"IsReady is logic type and equals false. What does this code do?",es:"IsReady es de tipo logic y vale false. ¿Qué hace este código?",pt:"IsReady é do tipo logic e vale false. O que esse código faz?",de:"IsReady ist vom Typ logic und false. Was macht dieser Code?",ja:"IsReadyはlogic型でfalseです。このコードは何をしますか？",ko:"IsReady는 logic 타입이며 false입니다. 이 코드는 무엇을 하나요?",hi:"IsReady logic टाइप है और false है। यह कोड क्या करता है?"},
+      code:"if (IsReady?):\n    Print(\"Prêt\")\nelse:\n    Print(\"Pas prêt\")",
+      options:{fr:["Affiche \"Prêt\"","Affiche \"Pas prêt\"","Ne compile pas","Affiche les deux"],en:["Prints \"Prêt\"","Prints \"Pas prêt\"","Doesn't compile","Prints both"],es:["Muestra \"Prêt\"","Muestra \"Pas prêt\"","No compila","Muestra ambos"],pt:["Mostra \"Prêt\"","Mostra \"Pas prêt\"","Não compila","Mostra os dois"],de:["Gibt \"Prêt\" aus","Gibt \"Pas prêt\" aus","Kompiliert nicht","Gibt beides aus"],ja:["\"Prêt\"を表示","\"Pas prêt\"を表示","コンパイルできない","両方表示"],ko:["\"Prêt\" 출력","\"Pas prêt\" 출력","컴파일 안 됨","둘 다 출력"],hi:["\"Prêt\" दिखाता है","\"Pas prêt\" दिखाता है","कंपाइल नहीं होता","दोनों दिखाता है"]},
+      correct:1,
+      explain:{fr:"IsReady vaut false, donc la condition échoue et c'est le bloc else qui s'exécute : \"Pas prêt\" s'affiche.",en:"IsReady is false, so the condition fails and the else block runs: \"Pas prêt\" is printed.",es:"IsReady es false, así que la condición falla y se ejecuta el bloque else: se muestra \"Pas prêt\".",pt:"IsReady é false, então a condição falha e o bloco else executa: \"Pas prêt\" é exibido.",de:"IsReady ist false, also schlägt die Bedingung fehl und der else-Block läuft: \"Pas prêt\" wird ausgegeben.",ja:"IsReadyはfalseなので条件は失敗し、elseブロックが実行されて\"Pas prêt\"が表示されます。",ko:"IsReady가 false이므로 조건이 실패하고 else 블록이 실행되어 \"Pas prêt\"가 출력됩니다.",hi:"IsReady false है, इसलिए शर्त विफल होती है और else ब्लॉक चलता है: \"Pas prêt\" दिखता है।"}
+    },
+    { type:'mcq',
+      prompt:{fr:"Quel type de valeur une condition de if doit-elle produire en Verse ?",en:"What kind of value must an if condition produce in Verse?",es:"¿Qué tipo de valor debe producir una condición de if en Verse?",pt:"Que tipo de valor uma condição de if deve produzir em Verse?",de:"Welchen Werttyp muss eine if-Bedingung in Verse liefern?",ja:"Verseでifの条件はどんな型の値を返す必要がありますか？",ko:"Verse에서 if 조건은 어떤 타입의 값을 만들어야 하나요?",hi:"Verse में if की शर्त को किस टाइप का मान देना चाहिए?"},
+      options:{
+        fr:["Un int (0 ou 1)","Une valeur logic (true / false), ou une expression faillible","Une string","N'importe quel type"],
+        en:["An int (0 or 1)","A logic value (true / false), or a failable expression","A string","Any type"],
+        es:["Un int (0 o 1)","Un valor logic (true/false), o una expresión faillible","Un string","Cualquier tipo"],
+        pt:["Um int (0 ou 1)","Um valor logic (true/false), ou uma expressão faillible","Uma string","Qualquer tipo"],
+        de:["Ein int (0 oder 1)","Ein logic-Wert (true/false) oder ein failable Ausdruck","Ein string","Jeder beliebige Typ"],
+        ja:["int（0か1）","logic値（true/false）または失敗しうる式","string","どんな型でも"],
+        ko:["int(0 또는 1)","logic 값(true/false) 또는 실패 가능한 표현식","string","아무 타입이나"],
+        hi:["एक int (0 या 1)","एक logic मान (true/false), या असफल हो सकने वाला एक्सप्रेशन","एक string","कोई भी टाइप"]
+      },
+      correct:1,
+      explain:{fr:"Un if teste soit une valeur logic, soit une expression faillible qui peut réussir ou échouer — jamais un simple entier comme en C.",en:"An if tests either a logic value or a failable expression that can succeed or fail — never a plain integer like in C.",es:"Un if evalúa un valor logic o una expresión faillible que puede tener éxito o fallar — nunca un simple entero como en C.",pt:"Um if avalia um valor logic ou uma expressão faillible que pode ter sucesso ou falhar — nunca um simples inteiro como em C.",de:"Ein if prüft entweder einen logic-Wert oder einen failable Ausdruck, nie eine einfache Ganzzahl wie in C.",ja:"ifはlogic値か、成功/失敗する式のどちらかを判定します — Cのような単純な整数ではありません。",ko:"if는 logic 값이나 성공/실패하는 표현식을 검사합니다 — C처럼 단순 정수가 아닙니다.",hi:"if या तो logic मान जांचता है या असफल हो सकने वाला एक्सप्रेशन — C की तरह साधारण पूर्णांक कभी नहीं।"}
+    },
+    { type:'mcq',
+      prompt:{fr:"Score vaut 40. Que se passe-t-il avec ce code ?",en:"Score is 40. What happens with this code?",es:"Score vale 40. ¿Qué pasa con este código?",pt:"Score vale 40. O que acontece com esse código?",de:"Score ist 40. Was passiert mit diesem Code?",ja:"Scoreは40です。このコードはどうなりますか？",ko:"Score가 40입니다. 이 코드는 어떻게 되나요?",hi:"Score 40 है। इस कोड का क्या होगा?"},
+      code:"if (Score >= 50):\n    Print(\"Niveau atteint\")\nelse:\n    Print(\"Pas encore\")",
+      options:{fr:["\"Niveau atteint\" s'affiche","\"Pas encore\" s'affiche","Rien ne s'affiche","Erreur"],en:["\"Niveau atteint\" is printed","\"Pas encore\" is printed","Nothing is printed","Error"],es:["Se muestra \"Niveau atteint\"","Se muestra \"Pas encore\"","No se muestra nada","Error"],pt:["\"Niveau atteint\" é exibido","\"Pas encore\" é exibido","Nada é exibido","Erro"],de:["\"Niveau atteint\" wird ausgegeben","\"Pas encore\" wird ausgegeben","Nichts wird ausgegeben","Fehler"],ja:["\"Niveau atteint\"が表示される","\"Pas encore\"が表示される","何も表示されない","エラー"],ko:["\"Niveau atteint\" 출력됨","\"Pas encore\" 출력됨","아무것도 출력되지 않음","오류"],hi:["\"Niveau atteint\" दिखता है","\"Pas encore\" दिखता है","कुछ नहीं दिखता","एरर"]},
+      correct:1,
+      explain:{fr:"40 >= 50 est faux, donc la condition échoue et le bloc else s'exécute.",en:"40 >= 50 is false, so the condition fails and the else block runs.",es:"40 >= 50 es falso, así que la condición falla y se ejecuta el bloque else.",pt:"40 >= 50 é falso, então a condição falha e o bloco else executa.",de:"40 >= 50 ist falsch, also schlägt die Bedingung fehl und der else-Block läuft.",ja:"40 >= 50はfalseなので条件は失敗し、elseブロックが実行されます。",ko:"40 >= 50은 거짓이므로 조건이 실패하고 else 블록이 실행됩니다.",hi:"40 >= 50 गलत है, इसलिए शर्त विफल होती है और else ब्लॉक चलता है।"}
+    }
+  ]
+},
+{
+  id:'u5', num:5,
+  title:{fr:'Boucles',en:'Loops',es:'Bucles',pt:'Loops',de:'Schleifen',ja:'ループ',ko:'반복문',hi:'लूप'},
+  subtitle:{fr:'for, itération sur un tableau',en:'for, iterating over an array',es:'for, iteración sobre un array',pt:'for, iteração sobre um array',de:'for, Iteration über ein Array',ja:'for、配列の反復処理',ko:'for, 배열 순회',hi:'for, array पर पुनरावृत्ति'},
+  lesson:{
+    fr:"for (Élément : Tableau): permet de parcourir chaque élément d'un tableau, un par un. Le corps de la boucle s'exécute une fois par élément, et Élément prend à chaque tour la valeur de l'élément courant. Une expression for renvoie même un nouveau tableau construit à partir du résultat de chaque itération.",
+    en:"for (Item : Array): lets you go through each element of an array, one at a time. The loop body runs once per element, and Item takes the value of the current element on each pass. A for expression even returns a new array built from the result of each iteration.",
+    es:"for (Elemento : Array): permite recorrer cada elemento de un array, uno por uno. El cuerpo del bucle se ejecuta una vez por elemento, y Elemento toma el valor del elemento actual en cada vuelta. Una expresión for incluso devuelve un nuevo array construido con el resultado de cada iteración.",
+    pt:"for (Item : Array): permite percorrer cada elemento de um array, um por um. O corpo do loop executa uma vez por elemento, e Item recebe o valor do elemento atual a cada volta. Uma expressão for até retorna um novo array construído a partir do resultado de cada iteração.",
+    de:"for (Element : Array): durchläuft jedes Element eines Arrays einzeln. Der Schleifenrumpf läuft einmal pro Element, und Element nimmt bei jedem Durchlauf den Wert des aktuellen Elements an. Ein for-Ausdruck gibt sogar ein neues Array zurück, gebaut aus dem Ergebnis jeder Iteration.",
+    ja:"for (要素 : 配列): は配列の各要素を一つずつ処理します。ループ本体は要素ごとに一回実行され、要素は毎回現在の要素の値を取ります。for式は各反復の結果から作られた新しい配列を返すことさえあります。",
+    ko:"for (항목 : 배열): 은 배열의 각 요소를 하나씩 순회합니다. 루프 본문은 요소마다 한 번씩 실행되며, 항목은 매번 현재 요소의 값을 가집니다. for 표현식은 각 반복의 결과로 만들어진 새 배열을 반환하기도 합니다.",
+    hi:"for (Item : Array): आपको array के हर एलिमेंट को एक-एक करके देखने देता है। लूप का body हर एलिमेंट के लिए एक बार चलता है, और Item हर बार मौजूदा एलिमेंट का मान लेता है। एक for एक्सप्रेशन हर पुनरावृत्ति के परिणाम से बना एक नया array भी लौटाता है।"
+  },
+  lessonCode:{
+    fr:"for (Player : Players):\n    Print(\"Bonjour joueur !\")",
+    en:"for (Player : Players):\n    Print(\"Hello player!\")",
+    es:"for (Player : Players):\n    Print(\"¡Hola jugador!\")",
+    pt:"for (Player : Players):\n    Print(\"Olá jogador!\")",
+    de:"for (Player : Players):\n    Print(\"Hallo Spieler!\")",
+    ja:"for (Player : Players):\n    Print(\"こんにちは、プレイヤー！\")",
+    ko:"for (Player : Players):\n    Print(\"안녕하세요, 플레이어!\")",
+    hi:"for (Player : Players):\n    Print(\"नमस्ते खिलाड़ी!\")"
+  },
+  exercises: [
+    { type:'mcq',
+      prompt:{fr:"Quelle est la bonne syntaxe pour parcourir chaque joueur d'un tableau Players ?",en:"What's the correct syntax to go through each player in a Players array?",es:"¿Cuál es la sintaxis correcta para recorrer cada jugador de un array Players?",pt:"Qual é a sintaxe correta para percorrer cada jogador de um array Players?",de:"Was ist die korrekte Syntax, um jeden Spieler eines Players-Arrays zu durchlaufen?",ja:"Players配列の各プレイヤーを処理する正しい構文は？",ko:"Players 배열의 각 플레이어를 순회하는 올바른 문법은?",hi:"Players array के हर खिलाड़ी को देखने के लिए सही सिंटैक्स क्या है?"},
+      options:{
+        fr:["for (Player : Players):\n    Print(\"Joueur trouvé\")","foreach Player in Players:\n    Print(\"Joueur trouvé\")","loop Player from Players:\n    Print(\"Joueur trouvé\")","while (Player : Players):\n    Print(\"Joueur trouvé\")"],
+        en:["for (Player : Players):\n    Print(\"Joueur trouvé\")","foreach Player in Players:\n    Print(\"Joueur trouvé\")","loop Player from Players:\n    Print(\"Joueur trouvé\")","while (Player : Players):\n    Print(\"Joueur trouvé\")"],
+        es:["for (Player : Players):\n    Print(\"Joueur trouvé\")","foreach Player in Players:\n    Print(\"Joueur trouvé\")","loop Player from Players:\n    Print(\"Joueur trouvé\")","while (Player : Players):\n    Print(\"Joueur trouvé\")"],
+        pt:["for (Player : Players):\n    Print(\"Joueur trouvé\")","foreach Player in Players:\n    Print(\"Joueur trouvé\")","loop Player from Players:\n    Print(\"Joueur trouvé\")","while (Player : Players):\n    Print(\"Joueur trouvé\")"],
+        de:["for (Player : Players):\n    Print(\"Joueur trouvé\")","foreach Player in Players:\n    Print(\"Joueur trouvé\")","loop Player from Players:\n    Print(\"Joueur trouvé\")","while (Player : Players):\n    Print(\"Joueur trouvé\")"],
+        ja:["for (Player : Players):\n    Print(\"Joueur trouvé\")","foreach Player in Players:\n    Print(\"Joueur trouvé\")","loop Player from Players:\n    Print(\"Joueur trouvé\")","while (Player : Players):\n    Print(\"Joueur trouvé\")"],
+        ko:["for (Player : Players):\n    Print(\"Joueur trouvé\")","foreach Player in Players:\n    Print(\"Joueur trouvé\")","loop Player from Players:\n    Print(\"Joueur trouvé\")","while (Player : Players):\n    Print(\"Joueur trouvé\")"],
+        hi:["for (Player : Players):\n    Print(\"Joueur trouvé\")","foreach Player in Players:\n    Print(\"Joueur trouvé\")","loop Player from Players:\n    Print(\"Joueur trouvé\")","while (Player : Players):\n    Print(\"Joueur trouvé\")"]
+      },
+      correct:0,
+      explain:{fr:"En Verse, for (Élément : Tableau): parcourt chaque élément du tableau, un peu comme un for...of en JavaScript.",en:"In Verse, for (Item : Array): goes through each element of the array, a bit like a for...of in JavaScript.",es:"En Verse, for (Elemento : Array): recorre cada elemento del array, algo así como un for...of en JavaScript.",pt:"Em Verse, for (Item : Array): percorre cada elemento do array, meio que um for...of em JavaScript.",de:"In Verse durchläuft for (Element : Array): jedes Element des Arrays, ähnlich wie for...of in JavaScript.",ja:"Verseのfor (要素 : 配列): はJavaScriptのfor...ofのように配列の各要素を処理します。",ko:"Verse의 for (항목 : 배열):은 JavaScript의 for...of처럼 배열의 각 요소를 순회합니다.",hi:"Verse में, for (Item : Array): array के हर एलिमेंट को घुमाता है, कुछ हद तक JavaScript के for...of जैसा।"}
+    },
+    { type:'fill',
+      prompt:{fr:"Complète le mot-clé manquant pour cette boucle.",en:"Fill in the missing keyword for this loop.",es:"Completa la palabra clave que falta para este bucle.",pt:"Complete a palavra-chave que falta para esse loop.",de:"Ergänze das fehlende Schlüsselwort für diese Schleife.",ja:"このループに足りないキーワードを入力してください。",ko:"이 반복문에 빠진 키워드를 채워 넣으세요.",hi:"इस लूप के लिए बचा हुआ कीवर्ड भरें।"},
+      codeBefore:"",
+      blankHint:{fr:"mot-clé",en:"keyword",es:"palabra clave",pt:"palavra-chave",de:"Schlüsselwort",ja:"キーワード",ko:"키워드",hi:"कीवर्ड"},
+      codeAfter:" (Player : Players):\n    Print(\"Bonjour\")", answers:["for"],
+      explain:{fr:"for est le mot-clé qui introduit une boucle sur les éléments d'un tableau en Verse.",en:"for is the keyword that introduces a loop over an array's elements in Verse.",es:"for es la palabra clave que introduce un bucle sobre los elementos de un array en Verse.",pt:"for é a palavra-chave que introduz um loop sobre os elementos de um array em Verse.",de:"for ist das Schlüsselwort, das eine Schleife über die Elemente eines Arrays einleitet.",ja:"forはVerseで配列の要素に対するループを示すキーワードです。",ko:"for는 Verse에서 배열 요소에 대한 반복문을 나타내는 키워드입니다.",hi:"for वह कीवर्ड है जो Verse में array के एलिमेंट्स पर लूप शुरू करता है।"}
+    },
+    { type:'mcq',
+      prompt:{fr:"Que représente 'Player' dans 'for (Player : Players):' ?",en:"What does 'Player' represent in 'for (Player : Players):'?",es:"¿Qué representa 'Player' en 'for (Player : Players):'?",pt:"O que representa 'Player' em 'for (Player : Players):'?",de:"Was steht 'Player' in 'for (Player : Players):' dar?",ja:"'for (Player : Players):' の中で'Player'は何を表しますか？",ko:"'for (Player : Players):'에서 'Player'는 무엇을 나타내나요?",hi:"'for (Player : Players):' में 'Player' क्या दर्शाता है?"},
+      options:{
+        fr:["Le nom du tableau entier","Un élément du tableau Players, à chaque itération","Le nombre total de joueurs","Un type de donnée"],
+        en:["The name of the whole array","One element of the Players array, on each iteration","The total number of players","A data type"],
+        es:["El nombre del array completo","Un elemento del array Players, en cada iteración","El número total de jugadores","Un tipo de dato"],
+        pt:["O nome do array inteiro","Um elemento do array Players, a cada iteração","O número total de jogadores","Um tipo de dado"],
+        de:["Der Name des ganzen Arrays","Ein Element des Players-Arrays, bei jeder Iteration","Die Gesamtzahl der Spieler","Ein Datentyp"],
+        ja:["配列全体の名前","反復ごとのPlayers配列の1要素","プレイヤーの総数","データ型"],
+        ko:["배열 전체의 이름","반복마다 Players 배열의 한 요소","전체 플레이어 수","데이터 타입"],
+        hi:["पूरे array का नाम","हर पुनरावृत्ति में Players array का एक एलिमेंट","खिलाड़ियों की कुल संख्या","एक डेटा टाइप"]
+      },
+      correct:1,
+      explain:{fr:"À chaque tour de boucle, Player prend la valeur de l'élément courant du tableau Players.",en:"On each loop pass, Player takes the value of the current element of the Players array.",es:"En cada vuelta del bucle, Player toma el valor del elemento actual del array Players.",pt:"A cada volta do loop, Player recebe o valor do elemento atual do array Players.",de:"Bei jedem Schleifendurchlauf nimmt Player den Wert des aktuellen Elements des Players-Arrays an.",ja:"ループのたびにPlayerはPlayers配列の現在の要素の値を取ります。",ko:"루프를 돌 때마다 Player는 Players 배열의 현재 요소 값을 가집니다.",hi:"हर लूप में, Player, Players array के मौजूदा एलिमेंट का मान लेता है।"}
+    },
+    { type:'mcq',
+      prompt:{fr:"Que renvoie une expression for en Verse ?",en:"What does a for expression return in Verse?",es:"¿Qué devuelve una expresión for en Verse?",pt:"O que uma expressão for retorna em Verse?",de:"Was gibt ein for-Ausdruck in Verse zurück?",ja:"Verseでfor式は何を返しますか？",ko:"Verse에서 for 표현식은 무엇을 반환하나요?",hi:"Verse में for एक्सप्रेशन क्या लौटाता है?"},
+      options:{
+        fr:["Rien, jamais de valeur","Un tableau contenant le résultat de chaque itération","Toujours un int","Une erreur de compilation"],
+        en:["Nothing, never a value","An array containing the result of each iteration","Always an int","A compile error"],
+        es:["Nada, nunca un valor","Un array con el resultado de cada iteración","Siempre un int","Un error de compilación"],
+        pt:["Nada, nunca um valor","Um array com o resultado de cada iteração","Sempre um int","Um erro de compilação"],
+        de:["Nichts, nie einen Wert","Ein Array mit dem Ergebnis jeder Iteration","Immer ein int","Einen Kompilierungsfehler"],
+        ja:["何も返さない","各反復の結果を含む配列","常にint","コンパイルエラー"],
+        ko:["아무것도, 값 없음","각 반복의 결과를 담은 배열","항상 int","컴파일 오류"],
+        hi:["कुछ नहीं, कभी मान नहीं","हर पुनरावृत्ति के परिणाम वाला एक array","हमेशा एक int","कंपाइल एरर"]
+      },
+      correct:1,
+      explain:{fr:"La dernière expression du bloc d'une itération devient un élément du tableau résultat : une boucle for peut donc directement construire un nouveau tableau.",en:"The last expression of each iteration's block becomes an element of the resulting array: a for loop can directly build a new array this way.",es:"La última expresión del bloque de cada iteración se convierte en un elemento del array resultante: un bucle for puede así construir directamente un nuevo array.",pt:"A última expressão do bloco de cada iteração vira um elemento do array resultante: um loop for pode assim construir diretamente um novo array.",de:"Der letzte Ausdruck jedes Iterationsblocks wird zu einem Element des Ergebnis-Arrays: eine for-Schleife kann so direkt ein neues Array bauen.",ja:"各反復の最後の式が結果配列の要素になります。forループはこうして直接新しい配列を作れます。",ko:"각 반복 블록의 마지막 식이 결과 배열의 요소가 됩니다. 이렇게 for 루프는 새 배열을 직접 만들 수 있습니다.",hi:"हर पुनरावृत्ति के ब्लॉक का आख़िरी एक्सप्रेशन परिणाम array का एक एलिमेंट बन जाता है: इस तरह for लूप सीधे नया array बना सकता है।"}
+    },
+    { type:'mcq',
+      prompt:{fr:"Players est un tableau vide ([]). Que se passe-t-il avec 'for (Player : Players): Print(\"Salut\")' ?",en:"Players is an empty array ([]). What happens with 'for (Player : Players): Print(\"Salut\")'?",es:"Players es un array vacío ([]). ¿Qué pasa con 'for (Player : Players): Print(\"Salut\")'?",pt:"Players é um array vazio ([]). O que acontece com 'for (Player : Players): Print(\"Salut\")'?",de:"Players ist ein leeres Array ([]). Was passiert mit 'for (Player : Players): Print(\"Salut\")'?",ja:"Playersが空の配列（[]）の場合、'for (Player : Players): Print(\"Salut\")' はどうなりますか？",ko:"Players가 빈 배열([])입니다. 'for (Player : Players): Print(\"Salut\")'는 어떻게 되나요?",hi:"Players एक खाली array ([]) है। 'for (Player : Players): Print(\"Salut\")' का क्या होगा?"},
+      options:{
+        fr:["Erreur de compilation","Le bloc ne s'exécute jamais, rien ne s'affiche","\"Salut\" s'affiche une fois quand même","Boucle infinie"],
+        en:["Compile error","The block never runs, nothing is printed","\"Salut\" is printed once anyway","Infinite loop"],
+        es:["Error de compilación","El bloque nunca se ejecuta, no se muestra nada","\"Salut\" se muestra una vez de todas formas","Bucle infinito"],
+        pt:["Erro de compilação","O bloco nunca executa, nada é exibido","\"Salut\" é exibido uma vez mesmo assim","Loop infinito"],
+        de:["Kompilierungsfehler","Der Block läuft nie, nichts wird ausgegeben","\"Salut\" wird trotzdem einmal ausgegeben","Endlosschleife"],
+        ja:["コンパイルエラー","ブロックは実行されず、何も表示されない","それでも\"Salut\"が一度表示される","無限ループ"],
+        ko:["컴파일 오류","블록이 절대 실행되지 않고 아무것도 출력 안 됨","그래도 \"Salut\"가 한 번 출력됨","무한 루프"],
+        hi:["कंपाइल एरर","ब्लॉक कभी नहीं चलता, कुछ नहीं दिखता","फिर भी \"Salut\" एक बार दिखता है","अनंत लूप"]
+      },
+      correct:1,
+      explain:{fr:"S'il n'y a aucun élément à parcourir, le corps de la boucle ne s'exécute simplement jamais.",en:"If there's nothing to iterate over, the loop body simply never runs.",es:"Si no hay ningún elemento que recorrer, el cuerpo del bucle simplemente nunca se ejecuta.",pt:"Se não há nada para percorrer, o corpo do loop simplesmente nunca executa.",de:"Gibt es nichts zu durchlaufen, läuft der Schleifenrumpf einfach nie.",ja:"反復するものが何もなければ、ループ本体は単に一度も実行されません。",ko:"순회할 것이 없으면 루프 본문은 그냥 한 번도 실행되지 않습니다.",hi:"अगर घूमने के लिए कुछ नहीं है, तो लूप का body बस कभी नहीं चलता।"}
+    },
+    { type:'mcq',
+      prompt:{fr:"Un tableau Names contient 3 éléments. Combien de fois s'exécute le corps de 'for (N : Names): Print(N)' ?",en:"A Names array has 3 elements. How many times does the body of 'for (N : Names): Print(N)' run?",es:"Un array Names tiene 3 elementos. ¿Cuántas veces se ejecuta el cuerpo de 'for (N : Names): Print(N)'?",pt:"Um array Names tem 3 elementos. Quantas vezes o corpo de 'for (N : Names): Print(N)' executa?",de:"Ein Names-Array hat 3 Elemente. Wie oft läuft der Rumpf von 'for (N : Names): Print(N)'?",ja:"Names配列に3つの要素があります。'for (N : Names): Print(N)' の本体は何回実行されますか？",ko:"Names 배열에 요소가 3개 있습니다. 'for (N : Names): Print(N)'의 본문은 몇 번 실행되나요?",hi:"एक Names array में 3 एलिमेंट हैं। 'for (N : Names): Print(N)' का body कितनी बार चलता है?"},
+      options:{fr:["0 fois","1 fois","3 fois","Une infinité de fois"],en:["0 times","1 time","3 times","Infinitely"],es:["0 veces","1 vez","3 veces","Infinitas veces"],pt:["0 vezes","1 vez","3 vezes","Infinitas vezes"],de:["0 Mal","1 Mal","3 Mal","Unendlich oft"],ja:["0回","1回","3回","無限に"],ko:["0번","1번","3번","무한히"],hi:["0 बार","1 बार","3 बार","अनंत बार"]},
+      correct:2,
+      explain:{fr:"La boucle s'exécute une fois par élément du tableau : ici, 3 éléments = 3 exécutions.",en:"The loop runs once per array element: here, 3 elements = 3 runs.",es:"El bucle se ejecuta una vez por elemento del array: aquí, 3 elementos = 3 ejecuciones.",pt:"O loop executa uma vez por elemento do array: aqui, 3 elementos = 3 execuções.",de:"Die Schleife läuft einmal pro Array-Element: hier, 3 Elemente = 3 Durchläufe.",ja:"ループは配列の要素ごとに1回実行されます：ここでは3要素＝3回実行。",ko:"루프는 배열 요소마다 한 번 실행됩니다: 여기서는 3개 요소 = 3번 실행.",hi:"लूप array के हर एलिमेंट के लिए एक बार चलता है: यहाँ 3 एलिमेंट = 3 बार।"}
+    }
+  ]
+},
+{
+  id:'u6', num:6,
+  title:{fr:'Tableaux & Maps',en:'Arrays & Maps',es:'Arrays y Maps',pt:'Arrays e Maps',de:'Arrays & Maps',ja:'配列とマップ',ko:'배열과 맵',hi:'Array और Map'},
+  subtitle:{fr:'array, map, indexation',en:'array, map, indexing',es:'array, map, indexación',pt:'array, map, indexação',de:'array, map, Indizierung',ja:'array、map、インデックス',ko:'array, map, 인덱싱',hi:'array, map, इंडेक्सिंग'},
+  lesson:{
+    fr:"Un tableau se type []Type (par ex []int), et se construit avec array{...} ou array{} pour un tableau vide. Une map associe des clés à des valeurs ; elle se type [TypeClé]TypeValeur et se construit avec map{}. Accéder à un élément par son index ou sa clé (Tableau[Index]) est une opération FAILLIBLE : elle peut échouer si l'index ou la clé n'existe pas.",
+    en:"An array is typed []Type (e.g. []int), and built with array{...} or array{} for an empty one. A map associates keys with values; it's typed [KeyType]ValueType and built with map{}. Accessing an element by index or key (Array[Index]) is a FAILABLE operation: it can fail if the index or key doesn't exist.",
+    es:"Un array se tipa []Tipo (p. ej. []int), y se construye con array{...} o array{} para uno vacío. Un map asocia claves con valores; se tipa [TipoClave]TipoValor y se construye con map{}. Acceder a un elemento por su índice o clave (Array[Índice]) es una operación FAILLIBLE: puede fallar si el índice o la clave no existen.",
+    pt:"Um array é tipado []Tipo (ex.: []int), e construído com array{...} ou array{} para um vazio. Um map associa chaves a valores; é tipado [TipoChave]TipoValor e construído com map{}. Acessar um elemento por índice ou chave (Array[Índice]) é uma operação FAILLIBLE: pode falhar se o índice ou a chave não existirem.",
+    de:"Ein Array wird als []Typ typisiert (z.B. []int) und mit array{...} oder array{} für ein leeres erstellt. Eine map ordnet Schlüsseln Werte zu; sie ist als [SchlüsselTyp]WertTyp typisiert und wird mit map{} erstellt. Der Zugriff auf ein Element per Index oder Schlüssel (Array[Index]) ist eine FAILABLE Operation: er kann fehlschlagen, wenn Index oder Schlüssel nicht existieren.",
+    ja:"配列は[]型（例：[]int）と型付けされ、array{...}または空の場合はarray{}で作ります。mapはキーと値を関連付け、[キー型]値型と型付けされ、map{}で作ります。インデックスやキーで要素にアクセスする（配列[インデックス]）のは失敗しうる操作です：インデックスやキーが存在しない場合に失敗する可能性があります。",
+    ko:"배열은 []타입(예: []int)으로 타입이 지정되며, array{...} 또는 빈 배열은 array{}로 만듭니다. map은 키와 값을 연결하며 [키타입]값타입으로 타입이 지정되고 map{}으로 만듭니다. 인덱스나 키로 요소에 접근하는 것(배열[인덱스])은 실패 가능한 연산입니다: 인덱스나 키가 존재하지 않으면 실패할 수 있습니다.",
+    hi:"एक array []Type के रूप में टाइप होता है (जैसे []int), और array{...} या खाली array के लिए array{} से बनता है। एक map, keys को values से जोड़ता है; यह [KeyType]ValueType के रूप में टाइप होता है और map{} से बनता है। इंडेक्स या key से एलिमेंट एक्सेस करना (Array[Index]) असफल हो सकने वाला ऑपरेशन है: अगर इंडेक्स या key मौजूद नहीं है तो यह असफल हो सकता है।"
+  },
+  lessonCode:{
+    fr:"var Scores : []int = array{10, 20, 30}\nvar KillCounts : [agent]int = map{}",
+    en:"var Scores : []int = array{10, 20, 30}\nvar KillCounts : [agent]int = map{}",
+    es:"var Scores : []int = array{10, 20, 30}\nvar KillCounts : [agent]int = map{}",
+    pt:"var Scores : []int = array{10, 20, 30}\nvar KillCounts : [agent]int = map{}",
+    de:"var Scores : []int = array{10, 20, 30}\nvar KillCounts : [agent]int = map{}",
+    ja:"var Scores : []int = array{10, 20, 30}\nvar KillCounts : [agent]int = map{}",
+    ko:"var Scores : []int = array{10, 20, 30}\nvar KillCounts : [agent]int = map{}",
+    hi:"var Scores : []int = array{10, 20, 30}\nvar KillCounts : [agent]int = map{}"
+  },
+  exercises: [
+    { type:'mcq',
+      prompt:{fr:"Quelle est la bonne façon de déclarer un tableau vide de int nommé Scores ?",en:"What's the correct way to declare an empty int array named Scores?",es:"¿Cuál es la forma correcta de declarar un array vacío de int llamado Scores?",pt:"Qual é a forma correta de declarar um array vazio de int chamado Scores?",de:"Was ist die korrekte Art, ein leeres int-Array namens Scores zu deklarieren?",ja:"Scoresという空のint配列を宣言する正しい方法は？",ko:"Scores라는 빈 int 배열을 선언하는 올바른 방법은?",hi:"Scores नाम के खाली int array को घोषित करने का सही तरीका क्या है?"},
+      options:{fr:["var Scores : []int = array{}","var Scores : []int = []","var Scores : []int = array()","Scores = []"],en:["var Scores : []int = array{}","var Scores : []int = []","var Scores : []int = array()","Scores = []"],es:["var Scores : []int = array{}","var Scores : []int = []","var Scores : []int = array()","Scores = []"],pt:["var Scores : []int = array{}","var Scores : []int = []","var Scores : []int = array()","Scores = []"],de:["var Scores : []int = array{}","var Scores : []int = []","var Scores : []int = array()","Scores = []"],ja:["var Scores : []int = array{}","var Scores : []int = []","var Scores : []int = array()","Scores = []"],ko:["var Scores : []int = array{}","var Scores : []int = []","var Scores : []int = array()","Scores = []"],hi:["var Scores : []int = array{}","var Scores : []int = []","var Scores : []int = array()","Scores = []"]},
+      correct:0,
+      explain:{fr:"En Verse, []int est le type 'tableau de int', et array{} construit un tableau vide de ce type.",en:"In Verse, []int is the 'array of int' type, and array{} builds an empty array of that type.",es:"En Verse, []int es el tipo 'array de int', y array{} construye un array vacío de ese tipo.",pt:"Em Verse, []int é o tipo 'array de int', e array{} constrói um array vazio desse tipo.",de:"In Verse ist []int der Typ 'Array von int', und array{} erstellt ein leeres Array dieses Typs.",ja:"Verseでは[]intは「intの配列」型で、array{}はその型の空配列を作ります。",ko:"Verse에서 []int는 'int의 배열' 타입이며, array{}는 그 타입의 빈 배열을 만듭니다.",hi:"Verse में []int 'int का array' टाइप है, और array{} उस टाइप का खाली array बनाता है।"}
+    },
+    { type:'mcq',
+      prompt:{fr:"Quel type représente un dictionnaire associant un agent (joueur) à un int, comme un score par joueur ?",en:"Which type represents a dictionary mapping an agent (player) to an int, like a per-player score?",es:"¿Qué tipo representa un diccionario que asocia un agent (jugador) con un int, como una puntuación por jugador?",pt:"Que tipo representa um dicionário associando um agent (jogador) a um int, como uma pontuação por jogador?",de:"Welcher Typ steht für ein Wörterbuch, das einen agent (Spieler) einem int zuordnet, wie einen Punktestand pro Spieler?",ja:"agent（プレイヤー）をintに対応させる辞書、例えばプレイヤーごとのスコアを表す型は？",ko:"agent(플레이어)를 int에 매핑하는 딕셔너리, 예를 들어 플레이어별 점수를 나타내는 타입은?",hi:"किसी agent (खिलाड़ी) को int से जोड़ने वाला डिक्शनरी टाइप कौन-सा है, जैसे प्रति खिलाड़ी स्कोर?"},
+      options:{fr:["[agent]int","dict<agent, int>","map(agent, int)","{agent: int}"],en:["[agent]int","dict<agent, int>","map(agent, int)","{agent: int}"],es:["[agent]int","dict<agent, int>","map(agent, int)","{agent: int}"],pt:["[agent]int","dict<agent, int>","map(agent, int)","{agent: int}"],de:["[agent]int","dict<agent, int>","map(agent, int)","{agent: int}"],ja:["[agent]int","dict<agent, int>","map(agent, int)","{agent: int}"],ko:["[agent]int","dict<agent, int>","map(agent, int)","{agent: int}"],hi:["[agent]int","dict<agent, int>","map(agent, int)","{agent: int}"]},
+      correct:0,
+      explain:{fr:"[agent]int est le type map associant des clés agent à des valeurs int, et map{} en crée une vide.",en:"[agent]int is the map type associating agent keys with int values, and map{} creates an empty one.",es:"[agent]int es el tipo map que asocia claves agent con valores int, y map{} crea uno vacío.",pt:"[agent]int é o tipo map que associa chaves agent a valores int, e map{} cria um vazio.",de:"[agent]int ist der map-Typ, der agent-Schlüssel int-Werten zuordnet, und map{} erstellt eine leere.",ja:"[agent]intはagentキーをint値に関連付けるmap型で、map{}は空のものを作ります。",ko:"[agent]int는 agent 키를 int 값에 매핑하는 map 타입이며, map{}은 빈 것을 만듭니다.",hi:"[agent]int वह map टाइप है जो agent keys को int values से जोड़ता है, और map{} एक खाली map बनाता है।"}
+    },
+    { type:'fill',
+      prompt:{fr:"Complète pour créer une map vide.",en:"Fill in to create an empty map.",es:"Completa para crear un map vacío.",pt:"Complete para criar um map vazio.",de:"Ergänze, um eine leere map zu erstellen.",ja:"空のmapを作るために入力してください。",ko:"빈 map을 만들기 위해 채워 넣으세요.",hi:"खाली map बनाने के लिए भरें।"},
+      codeBefore:"var KillCounts : [agent]int = ",
+      blankHint:{fr:"expression",en:"expression",es:"expresión",pt:"expressão",de:"Ausdruck",ja:"式",ko:"표현식",hi:"एक्सप्रेशन"},
+      codeAfter:"", answers:["map{}"],
+      explain:{fr:"map{} construit une map vide, prête à recevoir des associations clé/valeur.",en:"map{} builds an empty map, ready to receive key/value pairs.",es:"map{} construye un map vacío, listo para recibir asociaciones clave/valor.",pt:"map{} constrói um map vazio, pronto para receber pares chave/valor.",de:"map{} erstellt eine leere map, bereit für Schlüssel/Wert-Paare.",ja:"map{}は空のmapを作り、キーと値のペアを受け取る準備をします。",ko:"map{}는 빈 map을 만들어 키/값 쌍을 받을 준비를 합니다.",hi:"map{} एक खाली map बनाता है, जो key/value जोड़े लेने के लिए तैयार है।"}
+    },
+    { type:'mcq',
+      prompt:{fr:"Pourquoi l'accès à un élément de tableau ou de map (comme MonTableau[2]) est-il une opération faillible en Verse ?",en:"Why is accessing an array or map element (like MyArray[2]) a failable operation in Verse?",es:"¿Por qué acceder a un elemento de array o map (como MiArray[2]) es una operación faillible en Verse?",pt:"Por que acessar um elemento de array ou map (como MeuArray[2]) é uma operação faillible em Verse?",de:"Warum ist der Zugriff auf ein Array- oder map-Element (wie MeinArray[2]) in Verse eine failable Operation?",ja:"配列やmapの要素にアクセスする（MyArray[2]のように）ことが失敗しうる操作なのはなぜですか？",ko:"배열이나 map 요소에 접근하는 것(MyArray[2]처럼)이 Verse에서 실패 가능한 연산인 이유는?",hi:"MyArray[2] जैसे array या map एलिमेंट को एक्सेस करना Verse में असफल हो सकने वाला ऑपरेशन क्यों है?"},
+      options:{
+        fr:["Parce que Verse n'aime pas les tableaux","Parce que l'index demandé peut ne pas exister (tableau trop court, clé absente)","Parce que les tableaux sont toujours vides","Ce n'est pas faillible, c'est juste une erreur si ça rate"],
+        en:["Because Verse dislikes arrays","Because the requested index might not exist (array too short, missing key)","Because arrays are always empty","It isn't failable, it just errors if it fails"],
+        es:["Porque a Verse no le gustan los arrays","Porque el índice pedido podría no existir (array muy corto, clave ausente)","Porque los arrays siempre están vacíos","No es faillible, simplemente da error si falla"],
+        pt:["Porque Verse não gosta de arrays","Porque o índice pedido pode não existir (array curto demais, chave ausente)","Porque arrays estão sempre vazios","Não é faillible, apenas dá erro se falhar"],
+        de:["Weil Verse Arrays nicht mag","Weil der angeforderte Index nicht existieren könnte (Array zu kurz, fehlender Schlüssel)","Weil Arrays immer leer sind","Es ist nicht failable, es gibt nur einen Fehler, wenn es fehlschlägt"],
+        ja:["Verseが配列を嫌うから","要求されたインデックスが存在しない可能性があるから（配列が短すぎる、キーがない）","配列は常に空だから","失敗しうるのではなく、失敗したらただエラーになるだけ"],
+        ko:["Verse가 배열을 싫어해서","요청한 인덱스가 존재하지 않을 수 있어서(배열이 너무 짧음, 키 없음)","배열이 항상 비어 있어서","실패 가능한 게 아니라 실패하면 그냥 오류가 남"],
+        hi:["क्योंकि Verse को array पसंद नहीं","क्योंकि माँगा गया इंडेक्स मौजूद न हो सकता है (array छोटा, key गायब)","क्योंकि array हमेशा खाली होते हैं","यह असफल हो सकने वाला नहीं, बस विफल होने पर एरर देता है"]
+      },
+      correct:1,
+      explain:{fr:"Accéder à un index ou une clé qui n'existe pas doit être géré proprement : Verse rend donc cette opération faillible plutôt que de planter.",en:"Accessing a missing index or key needs to be handled cleanly, so Verse makes this operation failable instead of crashing.",es:"Acceder a un índice o clave que no existe debe manejarse limpiamente: por eso Verse hace esta operación faillible en lugar de fallar bruscamente.",pt:"Acessar um índice ou chave inexistente precisa ser tratado de forma limpa: por isso Verse torna essa operação faillible em vez de travar.",de:"Der Zugriff auf einen fehlenden Index oder Schlüssel muss sauber behandelt werden, daher macht Verse diese Operation failable statt abzustürzen.",ja:"存在しないインデックスやキーへのアクセスはきちんと処理する必要があるため、Verseはクラッシュせずこの操作を失敗しうるものにします。",ko:"없는 인덱스나 키에 접근하는 것은 깔끔하게 처리되어야 하므로, Verse는 이 연산을 크래시 대신 실패 가능하게 만듭니다.",hi:"न मिलने वाले इंडेक्स या key को एक्सेस करने को साफ़-सुथरे तरीके से संभालना ज़रूरी है, इसलिए Verse इसे क्रैश करने के बजाय असफल हो सकने वाला बनाता है।"}
+    },
+    { type:'mcq',
+      prompt:{fr:"Quel symbole encadre un accès faillible à un élément, comme dans 'player[Agent]' ?",en:"What symbol wraps a failable element access, like in 'player[Agent]'?",es:"¿Qué símbolo envuelve un acceso faillible a un elemento, como en 'player[Agent]'?",pt:"Que símbolo envolve um acesso faillible a um elemento, como em 'player[Agent]'?",de:"Welches Symbol umschließt einen failable Elementzugriff, wie in 'player[Agent]'?",ja:"'player[Agent]' のように、失敗しうる要素アクセスを囲む記号は？",ko:"'player[Agent]'처럼 실패 가능한 요소 접근을 감싸는 기호는?",hi:"'player[Agent]' जैसी असफल हो सकने वाली एलिमेंट एक्सेस को कौन-सा चिह्न घेरता है?"},
+      options:{fr:["Des parenthèses ( )","Des accolades { }","Des crochets [ ]","Des chevrons < >"],en:["Parentheses ( )","Curly braces { }","Square brackets [ ]","Angle brackets < >"],es:["Paréntesis ( )","Llaves { }","Corchetes [ ]","Ángulos < >"],pt:["Parênteses ( )","Chaves { }","Colchetes [ ]","Sinais de menor/maior < >"],de:["Klammern ( )","Geschweifte Klammern { }","Eckige Klammern [ ]","Spitze Klammern < >"],ja:["丸括弧 ( )","波括弧 { }","角括弧 [ ]","山括弧 < >"],ko:["소괄호 ( )","중괄호 { }","대괄호 [ ]","꺾쇠괄호 < >"],hi:["कोष्ठक ( )","घुंडीदार कोष्ठक { }","वर्गाकार कोष्ठक [ ]","कोणीय कोष्ठक < >"]},
+      correct:2,
+      explain:{fr:"Les crochets [] servent aussi bien à indexer un tableau/map qu'à signaler qu'une conversion ou un accès peut échouer.",en:"Square brackets [] are used both to index an array/map and to signal that a conversion or access might fail.",es:"Los corchetes [] sirven tanto para indexar un array/map como para señalar que una conversión o acceso puede fallar.",pt:"Os colchetes [] servem tanto para indexar um array/map quanto para sinalizar que uma conversão ou acesso pode falhar.",de:"Eckige Klammern [] dienen sowohl zum Indizieren eines Arrays/einer map als auch als Zeichen für eine mögliche fehlschlagende Konvertierung oder Zugriff.",ja:"角括弧[]は配列/mapのインデックスにも、変換やアクセスが失敗しうることを示すのにも使われます。",ko:"대괄호 []는 배열/map을 인덱싱하는 데도, 변환이나 접근이 실패할 수 있음을 나타내는 데도 쓰입니다.",hi:"वर्गाकार कोष्ठक [] array/map को इंडेक्स करने और यह बताने दोनों के लिए इस्तेमाल होते हैं कि कोई कन्वर्ज़न या एक्सेस विफल हो सकता है।"}
+    },
+    { type:'mcq',
+      prompt:{fr:"Scores : []int = array{10, 20, 30}. Quel est le type exact de Scores[0] si l'accès réussit ?",en:"Scores : []int = array{10, 20, 30}. What's the exact type of Scores[0] if the access succeeds?",es:"Scores : []int = array{10, 20, 30}. ¿Cuál es el tipo exacto de Scores[0] si el acceso tiene éxito?",pt:"Scores : []int = array{10, 20, 30}. Qual é o tipo exato de Scores[0] se o acesso tiver sucesso?",de:"Scores : []int = array{10, 20, 30}. Welchen genauen Typ hat Scores[0], wenn der Zugriff gelingt?",ja:"Scores : []int = array{10, 20, 30}。アクセスが成功した場合、Scores[0]の正確な型は？",ko:"Scores : []int = array{10, 20, 30}. 접근이 성공하면 Scores[0]의 정확한 타입은?",hi:"Scores : []int = array{10, 20, 30}। अगर एक्सेस सफल हो तो Scores[0] का सटीक टाइप क्या है?"},
+      options:{fr:["[]int","int","float","agent"],en:["[]int","int","float","agent"],es:["[]int","int","float","agent"],pt:["[]int","int","float","agent"],de:["[]int","int","float","agent"],ja:["[]int","int","float","agent"],ko:["[]int","int","float","agent"],hi:["[]int","int","float","agent"]},
+      correct:1,
+      explain:{fr:"Scores est un tableau de int : accéder à un de ses éléments donne donc un int (si l'accès réussit).",en:"Scores is an array of int, so accessing one of its elements gives an int (if the access succeeds).",es:"Scores es un array de int: acceder a uno de sus elementos da un int (si el acceso tiene éxito).",pt:"Scores é um array de int: acessar um de seus elementos dá um int (se o acesso tiver sucesso).",de:"Scores ist ein Array von int: der Zugriff auf ein Element ergibt also ein int (wenn er gelingt).",ja:"Scoresはintの配列なので、その要素にアクセスするとint（アクセス成功時）になります。",ko:"Scores는 int의 배열이므로 요소에 접근하면 int가 됩니다(접근이 성공하면).",hi:"Scores एक int का array है: इसका कोई एलिमेंट एक्सेस करने पर int मिलता है (अगर एक्सेस सफल हो)。"}
+    }
+  ]
+},
+{
+  id:'u7', num:7,
+  title:{fr:'Expressions faillibles',en:'Failable expressions',es:'Expresiones faillibles',pt:'Expressões faillibles',de:'Failable-Ausdrücke',ja:'失敗しうる式',ko:'실패 가능한 표현식',hi:'असफल हो सकने वाले एक्सप्रेशन'},
+  subtitle:{fr:"if (X := ...), gestion d'échec",en:'if (X := ...), handling failure',es:'if (X := ...), gestión de fallos',pt:'if (X := ...), tratamento de falhas',de:'if (X := ...), Fehlerbehandlung',ja:'if (X := ...)、失敗の扱い',ko:'if (X := ...), 실패 처리',hi:'if (X := ...), असफलता प्रबंधन'},
+  lesson:{
+    fr:"Certaines opérations en Verse peuvent échouer proprement, sans planter le programme : on parle d'expressions faillibles. Pour les utiliser, on les place dans un if (Variable := Expression):. Si l'expression réussit, Variable reçoit le résultat et le bloc s'exécute ; si elle échoue, le bloc est simplement ignoré. Ce système remplace élégamment les erreurs de type 'valeur nulle' d'autres langages.",
+    en:"Some operations in Verse can fail cleanly, without crashing the program: these are called failable expressions. You use them inside if (Variable := Expression):. If the expression succeeds, Variable receives the result and the block runs; if it fails, the block is simply skipped. This elegantly replaces 'null value' errors from other languages.",
+    es:"Algunas operaciones en Verse pueden fallar limpiamente, sin colapsar el programa: se llaman expresiones faillibles. Se usan dentro de un if (Variable := Expresión):. Si la expresión tiene éxito, Variable recibe el resultado y el bloque se ejecuta; si falla, el bloque simplemente se omite. Este sistema reemplaza elegantemente los errores de 'valor nulo' de otros lenguajes.",
+    pt:"Algumas operações em Verse podem falhar de forma limpa, sem travar o programa: são as expressões faillibles. Usam-se dentro de um if (Variável := Expressão):. Se a expressão tiver sucesso, Variável recebe o resultado e o bloco executa; se falhar, o bloco é simplesmente ignorado. Esse sistema substitui elegantemente os erros de 'valor nulo' de outras linguagens.",
+    de:"Manche Operationen in Verse können sauber fehlschlagen, ohne das Programm abstürzen zu lassen: das nennt man failable Ausdrücke. Man verwendet sie in einem if (Variable := Ausdruck):. Gelingt der Ausdruck, erhält Variable das Ergebnis und der Block läuft; schlägt er fehl, wird der Block einfach übersprungen. Dieses System ersetzt elegant die 'Nullwert'-Fehler anderer Sprachen.",
+    ja:"Verseの一部の操作はプログラムをクラッシュさせずにきれいに失敗できます — これを失敗しうる式と呼びます。if (変数 := 式): の中で使います。式が成功すれば変数が結果を受け取りブロックが実行され、失敗すればブロックは単にスキップされます。この仕組みは他言語の「null値」エラーをエレガントに置き換えます。",
+    ko:"Verse의 일부 연산은 프로그램을 크래시시키지 않고 깔끔하게 실패할 수 있습니다 — 이를 실패 가능한 표현식이라 합니다. if (변수 := 표현식): 안에서 사용합니다. 표현식이 성공하면 변수가 결과를 받고 블록이 실행되며, 실패하면 블록이 그냥 건너뛰어집니다. 이 시스템은 다른 언어의 'null 값' 오류를 우아하게 대체합니다.",
+    hi:"Verse में कुछ ऑपरेशन प्रोग्राम को क्रैश किए बिना साफ़-सुथरे तरीके से असफल हो सकते हैं: इन्हें असफल हो सकने वाले एक्सप्रेशन कहते हैं। इन्हें if (Variable := Expression): के अंदर इस्तेमाल करते हैं। अगर एक्सप्रेशन सफल होता है, तो Variable परिणाम पाता है और ब्लॉक चलता है; अगर विफल होता है, तो ब्लॉक बस छोड़ दिया जाता है। यह प्रणाली अन्य भाषाओं की 'null value' त्रुटियों को खूबसूरती से बदल देती है।"
+  },
+  lessonCode:{
+    fr:"if (Character := Player.GetFortCharacter[]):\n    Print(\"Personnage trouvé !\")",
+    en:"if (Character := Player.GetFortCharacter[]):\n    Print(\"Character found!\")",
+    es:"if (Character := Player.GetFortCharacter[]):\n    Print(\"¡Personaje encontrado!\")",
+    pt:"if (Character := Player.GetFortCharacter[]):\n    Print(\"Personagem encontrado!\")",
+    de:"if (Character := Player.GetFortCharacter[]):\n    Print(\"Charakter gefunden!\")",
+    ja:"if (Character := Player.GetFortCharacter[]):\n    Print(\"キャラクターが見つかりました！\")",
+    ko:"if (Character := Player.GetFortCharacter[]):\n    Print(\"캐릭터를 찾았습니다!\")",
+    hi:"if (Character := Player.GetFortCharacter[]):\n    Print(\"कैरेक्टर मिल गया!\")"
+  },
+  exercises: [
+    { type:'mcq',
+      prompt:{fr:"Que signifie le fait qu'une expression soit 'faillible' en Verse ?",en:"What does it mean for an expression to be 'failable' in Verse?",es:"¿Qué significa que una expresión sea 'faillible' en Verse?",pt:"O que significa uma expressão ser 'faillible' em Verse?",de:"Was bedeutet es, dass ein Ausdruck in Verse 'failable' ist?",ja:"Verseで式が「失敗しうる」とはどういう意味ですか？",ko:"Verse에서 표현식이 '실패 가능하다'는 것은 무슨 뜻인가요?",hi:"Verse में किसी एक्सप्रेशन का 'असफल हो सकना' का क्या मतलब है?"},
+      options:{
+        fr:["Elle contient forcément une erreur","Elle peut soit réussir et renvoyer une valeur, soit échouer sans planter le programme","Elle est interdite dans les fonctions","Elle ne fonctionne que sur les int"],
+        en:["It necessarily contains an error","It can either succeed and return a value, or fail without crashing the program","It's forbidden inside functions","It only works on ints"],
+        es:["Necesariamente contiene un error","Puede tener éxito y devolver un valor, o fallar sin colapsar el programa","Está prohibida dentro de funciones","Solo funciona con int"],
+        pt:["Necessariamente contém um erro","Pode ter sucesso e retornar um valor, ou falhar sem travar o programa","É proibida dentro de funções","Só funciona com int"],
+        de:["Er enthält zwangsläufig einen Fehler","Er kann entweder erfolgreich einen Wert zurückgeben oder fehlschlagen, ohne das Programm abstürzen zu lassen","Er ist in Funktionen verboten","Er funktioniert nur mit int"],
+        ja:["必ずエラーを含む","成功して値を返すか、プログラムをクラッシュさせずに失敗するかのどちらか","関数内では禁止されている","intでしか動かない"],
+        ko:["반드시 오류를 포함함","성공해서 값을 반환하거나, 프로그램을 크래시시키지 않고 실패할 수 있음","함수 안에서는 금지됨","int에서만 작동함"],
+        hi:["इसमें ज़रूर कोई एरर होता है","यह या तो सफल होकर मान लौटाता है, या प्रोग्राम को क्रैश किए बिना विफल हो जाता है","यह फ़ंक्शन के अंदर प्रतिबंधित है","यह सिर्फ़ int पर काम करता है"]
+      },
+      correct:1,
+      explain:{fr:"Une expression faillible peut échouer proprement (par exemple si une conversion ou un accès ne trouve rien), sans provoquer de crash ni de valeur null.",en:"A failable expression can fail cleanly (e.g. if a conversion or lookup finds nothing), without a crash or a null value.",es:"Una expresión faillible puede fallar limpiamente (por ejemplo si una conversión o acceso no encuentra nada), sin provocar un colapso ni un valor null.",pt:"Uma expressão faillible pode falhar de forma limpa (por exemplo se uma conversão ou acesso não encontra nada), sem causar travamento nem valor null.",de:"Ein failable Ausdruck kann sauber fehlschlagen (z.B. wenn eine Konvertierung oder Suche nichts findet), ohne Absturz oder Nullwert.",ja:"失敗しうる式は（変換やルックアップが何も見つけられない場合など）クラッシュやnull値なしにきれいに失敗できます。",ko:"실패 가능한 표현식은 (예: 변환이나 조회가 아무것도 찾지 못한 경우) 크래시나 null 값 없이 깔끔하게 실패할 수 있습니다.",hi:"असफल हो सकने वाला एक्सप्रेशन साफ़-सुथरे तरीके से विफल हो सकता है (जैसे कोई कन्वर्ज़न या खोज कुछ न पाए), बिना क्रैश या null मान के।"}
+    },
+    { type:'mcq',
+      prompt:{fr:"Comment gère-t-on une opération faillible qui peut ne rien renvoyer, comme Player.GetFortCharacter[] ?",en:"How do you handle a failable operation that might return nothing, like Player.GetFortCharacter[]?",es:"¿Cómo se maneja una operación faillible que puede no devolver nada, como Player.GetFortCharacter[]?",pt:"Como se lida com uma operação faillible que pode não retornar nada, como Player.GetFortCharacter[]?",de:"Wie behandelt man eine failable Operation, die eventuell nichts zurückgibt, wie Player.GetFortCharacter[]?",ja:"Player.GetFortCharacter[]のように何も返さない可能性のある失敗しうる操作はどう扱いますか？",ko:"Player.GetFortCharacter[]처럼 아무것도 반환하지 않을 수 있는 실패 가능한 연산은 어떻게 처리하나요?",hi:"Player.GetFortCharacter[] जैसे कुछ न लौटाने वाले असफल हो सकने वाले ऑपरेशन को कैसे संभालें?"},
+      code:"if (FortCharacter := Player.GetFortCharacter[]):\n    Print(\"Personnage trouvé\")",
+      options:{
+        fr:["Avec un try/catch","Avec un if (Variable := Expression):, qui n'entre dans le bloc que si l'expression réussit","On ignore simplement l'échec possible","Avec un while"],
+        en:["With a try/catch","With an if (Variable := Expression):, which only enters the block if the expression succeeds","You just ignore the possible failure","With a while"],
+        es:["Con un try/catch","Con un if (Variable := Expresión):, que solo entra al bloque si la expresión tiene éxito","Simplemente se ignora el posible fallo","Con un while"],
+        pt:["Com um try/catch","Com um if (Variável := Expressão):, que só entra no bloco se a expressão tiver sucesso","Simplesmente se ignora a possível falha","Com um while"],
+        de:["Mit einem try/catch","Mit einem if (Variable := Ausdruck):, der nur bei Erfolg in den Block eintritt","Man ignoriert einfach den möglichen Fehler","Mit einem while"],
+        ja:["try/catchで","if (変数 := 式): で、式が成功したときだけブロックに入る","起こりうる失敗をただ無視する","whileで"],
+        ko:["try/catch로","if (변수 := 표현식):로, 표현식이 성공할 때만 블록에 진입함","실패 가능성을 그냥 무시함","while로"],
+        hi:["try/catch से","if (Variable := Expression): से, जो केवल एक्सप्रेशन सफल होने पर ब्लॉक में जाता है","बस संभावित विफलता को नज़रअंदाज़ करें","while से"]
+      },
+      correct:1,
+      explain:{fr:"if (X := Expression): tente l'expression ; si elle réussit, X reçoit la valeur et le bloc s'exécute, sinon le bloc est simplement sauté.",en:"if (X := Expression): attempts the expression; if it succeeds, X gets the value and the block runs, otherwise the block is simply skipped.",es:"if (X := Expresión): intenta la expresión; si tiene éxito, X recibe el valor y el bloque se ejecuta, si no, el bloque simplemente se salta.",pt:"if (X := Expressão): tenta a expressão; se tiver sucesso, X recebe o valor e o bloco executa, senão o bloco é simplesmente pulado.",de:"if (X := Ausdruck): versucht den Ausdruck; gelingt er, erhält X den Wert und der Block läuft, sonst wird der Block einfach übersprungen.",ja:"if (X := 式): は式を試みます。成功すればXが値を受け取りブロックが実行され、そうでなければブロックは単にスキップされます。",ko:"if (X := 표현식):는 표현식을 시도합니다. 성공하면 X가 값을 받고 블록이 실행되며, 아니면 블록이 그냥 건너뛰어집니다.",hi:"if (X := Expression): एक्सप्रेशन को आज़माता है; अगर सफल हो, तो X मान पाता है और ब्लॉक चलता है, वरना ब्लॉक बस छोड़ दिया जाता है।"}
+    },
+    { type:'fill',
+      prompt:{fr:"Complète l'opérateur qui capture le résultat d'une expression faillible dans une nouvelle variable, à l'intérieur d'un if.",en:"Fill in the operator that captures a failable expression's result into a new variable, inside an if.",es:"Completa el operador que captura el resultado de una expresión faillible en una nueva variable, dentro de un if.",pt:"Complete o operador que captura o resultado de uma expressão faillible numa nova variável, dentro de um if.",de:"Ergänze den Operator, der das Ergebnis eines failable Ausdrucks in einer neuen Variable erfasst, innerhalb eines if.",ja:"if の中で、失敗しうる式の結果を新しい変数に取り込む演算子を入力してください。",ko:"if 안에서 실패 가능한 표현식의 결과를 새 변수에 담는 연산자를 채워 넣으세요.",hi:"if के अंदर, असफल हो सकने वाले एक्सप्रेशन के परिणाम को नई वेरिएबल में लेने वाला ऑपरेटर भरें।"},
+      codeBefore:"if (Player ",
+      blankHint:{fr:"opérateur",en:"operator",es:"operador",pt:"operador",de:"Operator",ja:"演算子",ko:"연산자",hi:"ऑपरेटर"},
+      codeAfter:" player[Agent]):\n    Print(\"OK\")", answers:[":="],
+      explain:{fr:":= à l'intérieur d'un if sert à initialiser une nouvelle variable avec le résultat d'une expression faillible.",en:":= inside an if initializes a new variable with the result of a failable expression.",es:":= dentro de un if sirve para inicializar una nueva variable con el resultado de una expresión faillible.",pt:":= dentro de um if serve para inicializar uma nova variável com o resultado de uma expressão faillible.",de:":= innerhalb eines if initialisiert eine neue Variable mit dem Ergebnis eines failable Ausdrucks.",ja:"if内の:=は、失敗しうる式の結果で新しい変数を初期化するために使います。",ko:"if 안의 :=는 실패 가능한 표현식의 결과로 새 변수를 초기화합니다.",hi:"if के अंदर := नई वेरिएबल को असफल हो सकने वाले एक्सप्रेशन के परिणाम से शुरू करता है।"}
+    },
+    { type:'mcq',
+      prompt:{fr:"player[Agent] échoue (l'agent ne correspond à aucun joueur). Que se passe-t-il avec 'if (Player := player[Agent]): Print(\"OK\")' ?",en:"player[Agent] fails (the agent doesn't match any player). What happens with 'if (Player := player[Agent]): Print(\"OK\")'?",es:"player[Agent] falla (el agent no corresponde a ningún jugador). ¿Qué pasa con 'if (Player := player[Agent]): Print(\"OK\")'?",pt:"player[Agent] falha (o agent não corresponde a nenhum jogador). O que acontece com 'if (Player := player[Agent]): Print(\"OK\")'?",de:"player[Agent] schlägt fehl (der agent passt zu keinem Spieler). Was passiert mit 'if (Player := player[Agent]): Print(\"OK\")'?",ja:"player[Agent] が失敗した場合（agentがどのプレイヤーとも一致しない）、'if (Player := player[Agent]): Print(\"OK\")' はどうなりますか？",ko:"player[Agent]가 실패합니다(agent가 어떤 플레이어와도 일치하지 않음). 'if (Player := player[Agent]): Print(\"OK\")'는 어떻게 되나요?",hi:"player[Agent] विफल हो जाता है (agent किसी खिलाड़ी से मेल नहीं खाता)। 'if (Player := player[Agent]): Print(\"OK\")' का क्या होगा?"},
+      options:{
+        fr:["Le programme plante","Le bloc if est simplement ignoré, l'exécution continue après","\"OK\" s'affiche quand même","Erreur de compilation"],
+        en:["The program crashes","The if block is simply skipped, execution continues after","\"OK\" is printed anyway","Compile error"],
+        es:["El programa colapsa","El bloque if simplemente se omite, la ejecución continúa después","\"OK\" se muestra de todas formas","Error de compilación"],
+        pt:["O programa trava","O bloco if é simplesmente ignorado, a execução continua depois","\"OK\" é exibido mesmo assim","Erro de compilação"],
+        de:["Das Programm stürzt ab","Der if-Block wird einfach übersprungen, die Ausführung geht danach weiter","\"OK\" wird trotzdem ausgegeben","Kompilierungsfehler"],
+        ja:["プログラムがクラッシュする","ifブロックは単にスキップされ、その後実行が続く","それでも\"OK\"が表示される","コンパイルエラー"],
+        ko:["프로그램이 크래시됨","if 블록이 그냥 건너뛰어지고 이후 실행이 계속됨","그래도 \"OK\"가 출력됨","컴파일 오류"],
+        hi:["प्रोग्राम क्रैश हो जाता है","if ब्लॉक बस छोड़ दिया जाता है, उसके बाद निष्पादन जारी रहता है","फिर भी \"OK\" दिखता है","कंपाइल एरर"]
+      },
+      correct:1,
+      explain:{fr:"C'est tout l'intérêt du système : un échec ne casse rien, le bloc associé est juste sauté et le code continue normalement.",en:"That's the whole point of the system: a failure breaks nothing, the associated block is just skipped and code continues normally.",es:"Ese es el sentido del sistema: un fallo no rompe nada, el bloque asociado simplemente se salta y el código continúa normalmente.",pt:"É essa a ideia do sistema: uma falha não quebra nada, o bloco associado é simplesmente pulado e o código continua normalmente.",de:"Das ist der Sinn des Systems: ein Fehlschlag zerstört nichts, der zugehörige Block wird nur übersprungen und der Code läuft normal weiter.",ja:"それがこの仕組みの意義です：失敗しても何も壊れず、関連ブロックがスキップされるだけでコードは正常に続きます。",ko:"이것이 시스템의 핵심입니다: 실패해도 아무것도 깨지지 않고, 관련 블록만 건너뛰어지며 코드는 정상적으로 계속됩니다.",hi:"यही इस प्रणाली की खासियत है: विफलता कुछ नहीं तोड़ती, संबंधित ब्लॉक बस छोड़ दिया जाता है और कोड सामान्य रूप से चलता रहता है。"}
+    },
+    { type:'mcq',
+      prompt:{fr:"Pourquoi ce système d'expressions faillibles est-il présenté comme un avantage de Verse ?",en:"Why is this failable-expression system presented as an advantage of Verse?",es:"¿Por qué este sistema de expresiones faillibles se presenta como una ventaja de Verse?",pt:"Por que esse sistema de expressões faillibles é apresentado como uma vantagem do Verse?",de:"Warum wird dieses System von failable Ausdrücken als Vorteil von Verse dargestellt?",ja:"この失敗しうる式の仕組みがVerseの利点とされるのはなぜですか？",ko:"이 실패 가능한 표현식 시스템이 Verse의 장점으로 소개되는 이유는?",hi:"असफल हो सकने वाले एक्सप्रेशन की यह प्रणाली Verse का फायदा क्यों मानी जाती है?"},
+      options:{
+        fr:["Il rend le code plus long à écrire","Il élimine les erreurs de type 'null pointer' en forçant à gérer l'échec explicitement","Il supprime le besoin de types","Il remplace complètement les fonctions"],
+        en:["It makes code longer to write","It eliminates 'null pointer' style errors by forcing explicit failure handling","It removes the need for types","It completely replaces functions"],
+        es:["Hace el código más largo de escribir","Elimina los errores de tipo 'null pointer' al forzar el manejo explícito de fallos","Elimina la necesidad de tipos","Reemplaza completamente las funciones"],
+        pt:["Torna o código mais longo de escrever","Elimina erros do tipo 'null pointer' ao forçar o tratamento explícito de falhas","Remove a necessidade de tipos","Substitui completamente as funções"],
+        de:["Es macht den Code länger","Es eliminiert 'Nullzeiger'-Fehler, indem es explizite Fehlerbehandlung erzwingt","Es macht Typen überflüssig","Es ersetzt Funktionen vollständig"],
+        ja:["コードを書くのが長くなる","明示的な失敗処理を強制することで「nullポインタ」型のエラーをなくす","型の必要性をなくす","関数を完全に置き換える"],
+        ko:["코드를 작성하기 더 길게 만듦","명시적인 실패 처리를 강제해 'null 포인터' 오류를 없앰","타입의 필요성을 없앰","함수를 완전히 대체함"],
+        hi:["इससे कोड लिखना लंबा हो जाता है","विफलता को स्पष्ट रूप से संभालने के लिए मजबूर करके 'null pointer' जैसी त्रुटियां खत्म करता है","टाइप की ज़रूरत खत्म करता है","फ़ंक्शन को पूरी तरह बदल देता है"]
+      },
+      correct:1,
+      explain:{fr:"En obligeant à gérer explicitement les cas d'échec avec if/:=, Verse évite les erreurs classiques de référence nulle d'autres langages.",en:"By forcing you to explicitly handle failure cases with if/:=, Verse avoids the classic null-reference errors of other languages.",es:"Al obligar a manejar explícitamente los casos de fallo con if/:=, Verse evita los clásicos errores de referencia nula de otros lenguajes.",pt:"Ao obrigar a tratar explicitamente os casos de falha com if/:=, Verse evita os clássicos erros de referência nula de outras linguagens.",de:"Indem es zwingt, Fehlerfälle explizit mit if/:= zu behandeln, vermeidet Verse die klassischen Nullreferenz-Fehler anderer Sprachen.",ja:"if/:= で失敗ケースを明示的に処理させることで、Verseは他言語の典型的なnull参照エラーを回避します。",ko:"if/:=로 실패 케이스를 명시적으로 처리하도록 강제함으로써, Verse는 다른 언어의 전형적인 null 참조 오류를 피합니다.",hi:"if/:= से विफलता को स्पष्ट रूप से संभालने के लिए मजबूर करके, Verse अन्य भाषाओं की क्लासिक null-reference त्रुटियों से बचता है।"}
+    }
+  ]
+},
+{
+  id:'u8', num:8,
+  title:{fr:'Classes & Devices',en:'Classes & Devices',es:'Clases y Devices',pt:'Classes e Devices',de:'Klassen & Devices',ja:'クラスとデバイス',ko:'클래스와 디바이스',hi:'क्लास और Device'},
+  subtitle:{fr:'class, creative_device, @editable',en:'class, creative_device, @editable',es:'class, creative_device, @editable',pt:'class, creative_device, @editable',de:'class, creative_device, @editable',ja:'class、creative_device、@editable',ko:'class, creative_device, @editable',hi:'class, creative_device, @editable'},
+  lesson:{
+    fr:"Un dispositif personnalisable pour UEFN se crée en définissant une classe qui hérite de creative_device : NomDispositif := class(creative_device): .... On peut exposer une variable dans le panneau Détails de l'éditeur avec @editable, et redéfinir la méthode OnBegin<override>() pour exécuter du code au lancement de la partie.",
+    en:"A custom device for UEFN is created by defining a class that inherits from creative_device: DeviceName := class(creative_device): .... You can expose a variable in the editor's Details panel with @editable, and override the OnBegin<override>() method to run code when the game starts.",
+    es:"Un dispositivo personalizado para UEFN se crea definiendo una clase que hereda de creative_device: NombreDispositivo := class(creative_device): .... Se puede exponer una variable en el panel Details del editor con @editable, y redefinir el método OnBegin<override>() para ejecutar código al iniciar la partida.",
+    pt:"Um dispositivo personalizado para UEFN se cria definindo uma classe que herda de creative_device: NomeDispositivo := class(creative_device): .... Pode-se expor uma variável no painel Details do editor com @editable, e sobrescrever o método OnBegin<override>() para executar código quando a partida começa.",
+    de:"Ein benutzerdefiniertes Gerät für UEFN wird erstellt, indem man eine Klasse definiert, die von creative_device erbt: GerätName := class(creative_device): .... Man kann eine Variable im Details-Panel des Editors mit @editable freigeben, und die Methode OnBegin<override>() überschreiben, um Code beim Spielstart auszuführen.",
+    ja:"UEFN用のカスタムデバイスは、creative_deviceを継承するクラスを定義して作ります：DeviceName := class(creative_device): ....。@editableでエディタのDetailsパネルに変数を公開でき、OnBegin<override>()メソッドをオーバーライドすればゲーム開始時にコードを実行できます。",
+    ko:"UEFN용 커스텀 디바이스는 creative_device를 상속하는 클래스를 정의해서 만듭니다: DeviceName := class(creative_device): .... @editable로 에디터의 Details 패널에 변수를 노출할 수 있고, OnBegin<override>() 메서드를 오버라이드하면 게임 시작 시 코드를 실행할 수 있습니다.",
+    hi:"UEFN के लिए एक कस्टम डिवाइस creative_device से इनहेरिट करने वाली क्लास परिभाषित करके बनाई जाती है: DeviceName := class(creative_device): .... आप @editable से एडिटर के Details पैनल में वेरिएबल दिखा सकते हैं, और गेम शुरू होने पर कोड चलाने के लिए OnBegin<override>() मेथड को ओवरराइड कर सकते हैं।"
+  },
+  lessonCode:{
+    fr:"my_device := class(creative_device):\n    @editable\n    var ScoreToWin : int = 10\n\n    OnBegin<override>()<suspends> : void =\n        Print(\"Dispositif prêt !\")",
+    en:"my_device := class(creative_device):\n    @editable\n    var ScoreToWin : int = 10\n\n    OnBegin<override>()<suspends> : void =\n        Print(\"Device ready!\")",
+    es:"my_device := class(creative_device):\n    @editable\n    var ScoreToWin : int = 10\n\n    OnBegin<override>()<suspends> : void =\n        Print(\"¡Dispositivo listo!\")",
+    pt:"my_device := class(creative_device):\n    @editable\n    var ScoreToWin : int = 10\n\n    OnBegin<override>()<suspends> : void =\n        Print(\"Dispositivo pronto!\")",
+    de:"my_device := class(creative_device):\n    @editable\n    var ScoreToWin : int = 10\n\n    OnBegin<override>()<suspends> : void =\n        Print(\"Gerät bereit!\")",
+    ja:"my_device := class(creative_device):\n    @editable\n    var ScoreToWin : int = 10\n\n    OnBegin<override>()<suspends> : void =\n        Print(\"デバイス準備完了！\")",
+    ko:"my_device := class(creative_device):\n    @editable\n    var ScoreToWin : int = 10\n\n    OnBegin<override>()<suspends> : void =\n        Print(\"디바이스 준비 완료!\")",
+    hi:"my_device := class(creative_device):\n    @editable\n    var ScoreToWin : int = 10\n\n    OnBegin<override>()<suspends> : void =\n        Print(\"डिवाइस तैयार है!\")"
+  },
+  exercises: [
+    { type:'mcq',
+      prompt:{fr:"Quelle ligne déclare un nouveau dispositif Verse personnalisé pour UEFN ?",en:"Which line declares a new custom Verse device for UEFN?",es:"¿Qué línea declara un nuevo dispositivo Verse personalizado para UEFN?",pt:"Qual linha declara um novo dispositivo Verse personalizado para UEFN?",de:"Welche Zeile deklariert ein neues benutzerdefiniertes Verse-Gerät für UEFN?",ja:"UEFN用の新しいカスタムVerseデバイスを宣言する行はどれですか？",ko:"UEFN용 새 커스텀 Verse 디바이스를 선언하는 줄은?",hi:"UEFN के लिए नया कस्टम Verse डिवाइस कौन-सी लाइन घोषित करती है?"},
+      options:{
+        fr:["my_device := class(creative_device):","class my_device extends creative_device:","device my_device : creative_device","new creative_device(my_device):"],
+        en:["my_device := class(creative_device):","class my_device extends creative_device:","device my_device : creative_device","new creative_device(my_device):"],
+        es:["my_device := class(creative_device):","class my_device extends creative_device:","device my_device : creative_device","new creative_device(my_device):"],
+        pt:["my_device := class(creative_device):","class my_device extends creative_device:","device my_device : creative_device","new creative_device(my_device):"],
+        de:["my_device := class(creative_device):","class my_device extends creative_device:","device my_device : creative_device","new creative_device(my_device):"],
+        ja:["my_device := class(creative_device):","class my_device extends creative_device:","device my_device : creative_device","new creative_device(my_device):"],
+        ko:["my_device := class(creative_device):","class my_device extends creative_device:","device my_device : creative_device","new creative_device(my_device):"],
+        hi:["my_device := class(creative_device):","class my_device extends creative_device:","device my_device : creative_device","new creative_device(my_device):"]
+      },
+      correct:0,
+      explain:{fr:"En Verse, on définit une classe avec Nom := class(ClasseParente): — ici on hérite de creative_device pour créer un dispositif utilisable dans UEFN.",en:"In Verse, you define a class with Name := class(ParentClass): — here inheriting from creative_device to create a device usable in UEFN.",es:"En Verse, se define una clase con Nombre := class(ClasePadre): — aquí heredando de creative_device para crear un dispositivo usable en UEFN.",pt:"Em Verse, define-se uma classe com Nome := class(ClassePai): — aqui herdando de creative_device para criar um dispositivo usável em UEFN.",de:"In Verse definiert man eine Klasse mit Name := class(Elternklasse): — hier von creative_device erbend, um ein in UEFN nutzbares Gerät zu erstellen.",ja:"Verseではクラスを名前 := class(親クラス): で定義します — ここではcreative_deviceを継承してUEFNで使えるデバイスを作ります。",ko:"Verse에서는 클래스를 이름 := class(부모클래스):로 정의합니다 — 여기서는 creative_device를 상속해 UEFN에서 쓸 수 있는 디바이스를 만듭니다.",hi:"Verse में क्लास को Name := class(ParentClass): से परिभाषित करते हैं — यहाँ creative_device से इनहेरिट करके UEFN में इस्तेमाल होने वाला डिवाइस बनाया गया है।"}
+    },
+    { type:'mcq',
+      prompt:{fr:"À quoi sert le spécifieur @editable placé au-dessus d'une variable de classe ?",en:"What does the @editable specifier above a class variable do?",es:"¿Para qué sirve el especificador @editable colocado sobre una variable de clase?",pt:"Para que serve o especificador @editable colocado acima de uma variável de classe?",de:"Wofür dient der @editable-Spezifizierer über einer Klassenvariable?",ja:"クラス変数の上に置く@editable指定子は何のためですか？",ko:"클래스 변수 위에 있는 @editable 지정자는 무슨 역할인가요?",hi:"क्लास वेरिएबल के ऊपर लगा @editable स्पेसिफायर किसके लिए है?"},
+      code:"@editable\nvar ScoreToWin : int = 10",
+      options:{
+        fr:["Il rend la variable privée","Il expose la variable dans le panneau Détails de l'éditeur UEFN, pour la régler sans coder","Il la transforme en constante","Il supprime la variable au runtime"],
+        en:["It makes the variable private","It exposes the variable in UEFN's Details panel, so it can be tweaked without coding","It turns it into a constant","It removes the variable at runtime"],
+        es:["Hace la variable privada","Expone la variable en el panel Details de UEFN, para ajustarla sin programar","La convierte en constante","Elimina la variable en tiempo de ejecución"],
+        pt:["Torna a variável privada","Expõe a variável no painel Details do UEFN, para ajustá-la sem programar","Transforma-a em constante","Remove a variável em tempo de execução"],
+        de:["Macht die Variable privat","Zeigt die Variable im Details-Panel von UEFN an, um sie ohne Code anzupassen","Macht sie zu einer Konstante","Entfernt die Variable zur Laufzeit"],
+        ja:["変数をプライベートにする","UEFNのDetailsパネルに変数を公開し、コードなしで調整できるようにする","定数に変える","実行時に変数を削除する"],
+        ko:["변수를 private으로 만듦","UEFN의 Details 패널에 변수를 노출해 코딩 없이 조정 가능하게 함","상수로 바꿈","실행 시 변수를 제거함"],
+        hi:["वेरिएबल को प्राइवेट बनाता है","वेरिएबल को UEFN के Details पैनल में दिखाता है, ताकि इसे बिना कोड लिखे बदला जा सके","इसे स्थिरांक बना देता है","रनटाइम पर वेरिएबल हटा देता है"]
+      },
+      correct:1,
+      explain:{fr:"@editable rend une variable réglable directement depuis l'inspecteur UEFN, pratique pour ajuster des valeurs de gameplay sans recompiler.",en:"@editable makes a variable adjustable directly from the UEFN inspector — handy for tuning gameplay values without recompiling.",es:"@editable hace que una variable sea ajustable directamente desde el inspector de UEFN, útil para ajustar valores de gameplay sin recompilar.",pt:"@editable torna uma variável ajustável diretamente pelo inspetor do UEFN, útil para ajustar valores de gameplay sem recompilar.",de:"@editable macht eine Variable direkt im UEFN-Inspektor einstellbar — praktisch, um Gameplay-Werte ohne Neukompilierung anzupassen.",ja:"@editableはUEFNのインスペクタから直接変数を調整可能にします — 再コンパイルせずゲームプレイの値を調整するのに便利です。",ko:"@editable는 UEFN 인스펙터에서 직접 변수를 조정할 수 있게 합니다 — 재컴파일 없이 게임플레이 값을 조정하는 데 유용합니다.",hi:"@editable किसी वेरिएबल को सीधे UEFN इंस्पेक्टर से एडजस्ट करने लायक बनाता है — बिना दोबारा कंपाइल किए गेमप्ले वैल्यू बदलने के लिए उपयोगी।"}
+    },
+    { type:'fill',
+      prompt:{fr:"Complète le nom de la méthode spéciale appelée automatiquement au début de la partie.",en:"Fill in the name of the special method called automatically when the game starts.",es:"Completa el nombre del método especial llamado automáticamente al inicio de la partida.",pt:"Complete o nome do método especial chamado automaticamente no início da partida.",de:"Ergänze den Namen der speziellen Methode, die beim Spielstart automatisch aufgerufen wird.",ja:"ゲーム開始時に自動的に呼ばれる特殊メソッドの名前を入力してください。",ko:"게임 시작 시 자동으로 호출되는 특수 메서드의 이름을 채워 넣으세요.",hi:"गेम शुरू होने पर अपने आप बुलाई जाने वाली खास मेथड का नाम भरें।"},
+      codeBefore:"",
+      blankHint:{fr:"méthode",en:"method",es:"método",pt:"método",de:"Methode",ja:"メソッド",ko:"메서드",hi:"मेथड"},
+      codeAfter:"<override>()<suspends> : void =\n    Print(\"Partie lancée\")", answers:["OnBegin"],
+      explain:{fr:"OnBegin<override>() est la méthode que UEFN appelle automatiquement quand la partie démarre — l'endroit classique pour initialiser ton dispositif.",en:"OnBegin<override>() is the method UEFN automatically calls when the game starts — the classic place to initialize your device.",es:"OnBegin<override>() es el método que UEFN llama automáticamente cuando empieza la partida — el lugar clásico para inicializar tu dispositivo.",pt:"OnBegin<override>() é o método que UEFN chama automaticamente quando a partida começa — o lugar clássico para inicializar seu dispositivo.",de:"OnBegin<override>() ist die Methode, die UEFN automatisch beim Spielstart aufruft — der klassische Ort, um dein Gerät zu initialisieren.",ja:"OnBegin<override>()はゲーム開始時にUEFNが自動的に呼び出すメソッドです — デバイスを初期化する定番の場所です。",ko:"OnBegin<override>()는 게임이 시작될 때 UEFN이 자동으로 호출하는 메서드입니다 — 디바이스를 초기화하는 대표적인 곳입니다.",hi:"OnBegin<override>() वह मेथड है जिसे UEFN गेम शुरू होने पर अपने आप बुलाता है — यह आपके डिवाइस को शुरू करने की क्लासिक जगह है।"}
+    },
+    { type:'mcq',
+      prompt:{fr:"Pourquoi 'OnBegin' porte-t-il le spécifieur <override> ?",en:"Why does 'OnBegin' have the <override> specifier?",es:"¿Por qué 'OnBegin' lleva el especificador <override>?",pt:"Por que 'OnBegin' tem o especificador <override>?",de:"Warum trägt 'OnBegin' den Spezifizierer <override>?",ja:"'OnBegin' に<override>指定子が付くのはなぜですか？",ko:"'OnBegin'에 <override> 지정자가 붙는 이유는?",hi:"'OnBegin' पर <override> स्पेसिफायर क्यों है?"},
+      options:{
+        fr:["Parce qu'elle est plus rapide ainsi","Parce qu'elle redéfinit une méthode déjà existante dans la classe parente creative_device","C'est obligatoire pour toutes les fonctions","Cela la rend privée"],
+        en:["It makes it run faster","Because it redefines a method that already exists in the parent creative_device class","It's required for all functions","It makes it private"],
+        es:["La hace más rápida","Porque redefine un método que ya existe en la clase padre creative_device","Es obligatorio para todas las funciones","La hace privada"],
+        pt:["Torna-a mais rápida","Porque redefine um método que já existe na classe pai creative_device","É obrigatório para todas as funções","Torna-a privada"],
+        de:["Es macht sie schneller","Weil sie eine bereits in der Elternklasse creative_device existierende Methode neu definiert","Es ist für alle Funktionen erforderlich","Es macht sie privat"],
+        ja:["実行が速くなるから","親クラスcreative_deviceに既に存在するメソッドを再定義するから","すべての関数に必須だから","プライベートになるから"],
+        ko:["더 빠르게 실행되게 함","부모 클래스 creative_device에 이미 존재하는 메서드를 재정의하기 때문","모든 함수에 필수임","private으로 만듦"],
+        hi:["यह इसे तेज़ बनाता है","क्योंकि यह पैरेंट क्लास creative_device में पहले से मौजूद मेथड को फिर से परिभाषित करता है","यह सभी फ़ंक्शन के लिए ज़रूरी है","यह इसे प्राइवेट बना देता है"]
+      },
+      correct:1,
+      explain:{fr:"<override> indique qu'on redéfinit une méthode déjà déclarée dans la classe dont on hérite (ici creative_device), plutôt que d'en créer une nouvelle.",en:"<override> means you're redefining a method already declared in the class you inherit from (here creative_device), rather than creating a new one.",es:"<override> significa que estás redefiniendo un método ya declarado en la clase de la que heredas (aquí creative_device), en lugar de crear uno nuevo.",pt:"<override> significa que você está redefinindo um método já declarado na classe da qual herda (aqui creative_device), em vez de criar um novo.",de:"<override> bedeutet, dass man eine bereits in der Elternklasse (hier creative_device) deklarierte Methode neu definiert, statt eine neue zu erstellen.",ja:"<override>は、新しいメソッドを作るのではなく、継承元のクラス（ここではcreative_device）に既に宣言されているメソッドを再定義することを意味します。",ko:"<override>는 새 메서드를 만드는 대신 상속받은 클래스(여기서는 creative_device)에 이미 선언된 메서드를 재정의한다는 뜻입니다.",hi:"<override> का मतलब है कि आप नई मेथड बनाने के बजाय, जिस क्लास से इनहेरिट किया है (यहाँ creative_device) उसमें पहले से घोषित मेथड को फिर से परिभाषित कर रहे हैं।"}
+    },
+    { type:'mcq',
+      prompt:{fr:"Une variable non-@editable dans un creative_device : peut-on quand même lui donner une valeur par défaut dans le code ?",en:"A non-@editable variable in a creative_device: can it still get a default value in code?",es:"Una variable no-@editable en un creative_device: ¿puede igualmente tener un valor por defecto en el código?",pt:"Uma variável não-@editable em um creative_device: ela ainda pode ter um valor padrão no código?",de:"Eine nicht-@editable Variable in einem creative_device: kann sie trotzdem einen Standardwert im Code bekommen?",ja:"creative_device内で@editableでない変数：コードでデフォルト値を与えることはできますか？",ko:"creative_device 안의 @editable이 아닌 변수: 코드에서 기본값을 줄 수 있나요?",hi:"creative_device में गैर-@editable वेरिएबल: क्या उसे फिर भी कोड में डिफ़ॉल्ट मान दिया जा सकता है?"},
+      options:{
+        fr:["Non, jamais","Oui, exactement comme une variable normale (var Nom : Type = Valeur)","Seulement si elle est @editable","Seulement dans OnBegin"],
+        en:["No, never","Yes, exactly like a normal variable (var Name : Type = Value)","Only if it's @editable","Only inside OnBegin"],
+        es:["No, nunca","Sí, exactamente como una variable normal (var Nombre : Tipo = Valor)","Solo si es @editable","Solo dentro de OnBegin"],
+        pt:["Não, nunca","Sim, exatamente como uma variável normal (var Nome : Tipo = Valor)","Só se for @editable","Só dentro de OnBegin"],
+        de:["Nein, nie","Ja, genau wie eine normale Variable (var Name : Typ = Wert)","Nur wenn sie @editable ist","Nur innerhalb von OnBegin"],
+        ja:["いいえ、決してできない","はい、通常の変数と全く同じ（var 名前 : 型 = 値）","@editableの場合のみ","OnBeginの中でのみ"],
+        ko:["아니요, 절대 안 됨","네, 일반 변수와 똑같이(var 이름 : 타입 = 값)","@editable일 때만","OnBegin 안에서만"],
+        hi:["नहीं, कभी नहीं","हाँ, बिल्कुल सामान्य वेरिएबल की तरह (var Name : Type = Value)","केवल तभी जब यह @editable हो","केवल OnBegin के अंदर"]
+      },
+      correct:1,
+      explain:{fr:"@editable ne fait qu'ajouter la possibilité de régler la valeur depuis l'éditeur ; la déclaration et l'initialisation en code restent identiques à une variable classique.",en:"@editable only adds the ability to tweak the value from the editor; the declaration and initialization in code stay identical to a regular variable.",es:"@editable solo añade la posibilidad de ajustar el valor desde el editor; la declaración e inicialización en código siguen siendo idénticas a una variable normal.",pt:"@editable só adiciona a possibilidade de ajustar o valor pelo editor; a declaração e inicialização em código continuam idênticas a uma variável normal.",de:"@editable fügt nur die Möglichkeit hinzu, den Wert im Editor anzupassen; Deklaration und Initialisierung im Code bleiben identisch zu einer normalen Variable.",ja:"@editableはエディタから値を調整できるようにするだけで、コードでの宣言と初期化は通常の変数と同じです。",ko:"@editable는 에디터에서 값을 조정할 수 있는 기능만 추가할 뿐, 코드에서의 선언과 초기화는 일반 변수와 동일합니다.",hi:"@editable केवल एडिटर से मान बदलने की सुविधा जोड़ता है; कोड में घोषणा और शुरुआती मान देना सामान्य वेरिएबल जैसा ही रहता है।"}
+    }
+  ]
+},
+{
+  id:'u9', num:9,
+  title:{fr:'Events',en:'Events',es:'Events',pt:'Events',de:'Events',ja:'イベント',ko:'이벤트',hi:'Event'},
+  subtitle:{fr:'Subscribe, callbacks, interactions',en:'Subscribe, callbacks, interactions',es:'Subscribe, callbacks, interacciones',pt:'Subscribe, callbacks, interações',de:'Subscribe, Callbacks, Interaktionen',ja:'Subscribe、コールバック、インタラクション',ko:'Subscribe, 콜백, 상호작용',hi:'Subscribe, callback, इंटरैक्शन'},
+  lesson:{
+    fr:"Verse fonctionne beaucoup par événements : plutôt que de vérifier un état en boucle, on s'abonne (Subscribe) à un événement avec une fonction de rappel (callback), qui sera appelée automatiquement quand l'événement se produit. C'est plus propre et bien plus performant qu'une vérification constante.",
+    en:"Verse relies heavily on events: instead of checking a state in a loop, you subscribe to an event with a callback function, which gets called automatically when the event happens. This is cleaner and far more efficient than constant checking.",
+    es:"Verse funciona mucho por eventos: en lugar de comprobar un estado en un bucle, te suscribes (Subscribe) a un evento con una función de callback, que se llamará automáticamente cuando ocurra el evento. Es más limpio y mucho más eficiente que una comprobación constante.",
+    pt:"Verse funciona muito por eventos: em vez de checar um estado em loop, você se inscreve (Subscribe) em um evento com uma função de callback, que será chamada automaticamente quando o evento ocorrer. É mais limpo e muito mais eficiente que checagem constante.",
+    de:"Verse basiert stark auf Events: statt einen Zustand in einer Schleife zu prüfen, abonniert man (Subscribe) ein Event mit einer Callback-Funktion, die automatisch aufgerufen wird, wenn das Event eintritt. Das ist sauberer und viel effizienter als ständiges Prüfen.",
+    ja:"Verseは大きくイベント駆動で動きます。ループで状態をチェックする代わりに、コールバック関数付きでイベントに購読（Subscribe）し、イベント発生時に自動的に呼び出されます。常時チェックより、はるかにきれいで効率的です。",
+    ko:"Verse는 이벤트에 크게 의존합니다: 반복문에서 상태를 확인하는 대신, 콜백 함수와 함께 이벤트를 구독(Subscribe)하면 이벤트가 발생할 때 자동으로 호출됩니다. 이는 지속적인 확인보다 더 깔끔하고 훨씬 효율적입니다.",
+    hi:"Verse बहुत हद तक events पर काम करता है: लूप में स्थिति जांचने के बजाय, आप callback फ़ंक्शन के साथ किसी event को subscribe करते हैं, जो event होने पर अपने आप बुलाया जाता है। यह लगातार जांच करने से ज़्यादा साफ़ और कहीं ज़्यादा कुशल है।"
+  },
+  lessonCode:{
+    fr:"OnBegin<override>()<suspends> : void =\n    StartButton.InteractedWithEvent.Subscribe(OnStartPressed)\n\nOnStartPressed(Agent : agent) : void =\n    Print(\"Bouton pressé !\")",
+    en:"OnBegin<override>()<suspends> : void =\n    StartButton.InteractedWithEvent.Subscribe(OnStartPressed)\n\nOnStartPressed(Agent : agent) : void =\n    Print(\"Button pressed!\")",
+    es:"OnBegin<override>()<suspends> : void =\n    StartButton.InteractedWithEvent.Subscribe(OnStartPressed)\n\nOnStartPressed(Agent : agent) : void =\n    Print(\"¡Botón presionado!\")",
+    pt:"OnBegin<override>()<suspends> : void =\n    StartButton.InteractedWithEvent.Subscribe(OnStartPressed)\n\nOnStartPressed(Agent : agent) : void =\n    Print(\"Botão pressionado!\")",
+    de:"OnBegin<override>()<suspends> : void =\n    StartButton.InteractedWithEvent.Subscribe(OnStartPressed)\n\nOnStartPressed(Agent : agent) : void =\n    Print(\"Knopf gedrückt!\")",
+    ja:"OnBegin<override>()<suspends> : void =\n    StartButton.InteractedWithEvent.Subscribe(OnStartPressed)\n\nOnStartPressed(Agent : agent) : void =\n    Print(\"ボタンが押されました！\")",
+    ko:"OnBegin<override>()<suspends> : void =\n    StartButton.InteractedWithEvent.Subscribe(OnStartPressed)\n\nOnStartPressed(Agent : agent) : void =\n    Print(\"버튼이 눌렸습니다!\")",
+    hi:"OnBegin<override>()<suspends> : void =\n    StartButton.InteractedWithEvent.Subscribe(OnStartPressed)\n\nOnStartPressed(Agent : agent) : void =\n    Print(\"बटन दबाया गया!\")"
+  },
+  exercises: [
+    { type:'mcq',
+      prompt:{fr:"Comment réagit-on en Verse à un événement, comme un joueur qui appuie sur un bouton ?",en:"How do you react to an event in Verse, like a player pressing a button?",es:"¿Cómo se reacciona en Verse a un evento, como un jugador pulsando un botón?",pt:"Como se reage em Verse a um evento, como um jogador apertando um botão?",de:"Wie reagiert man in Verse auf ein Event, z.B. einen Spieler, der einen Knopf drückt?",ja:"プレイヤーがボタンを押すようなイベントにVerseではどう反応しますか？",ko:"플레이어가 버튼을 누르는 것 같은 이벤트에 Verse에서는 어떻게 반응하나요?",hi:"किसी खिलाड़ी के बटन दबाने जैसे event पर Verse में कैसे प्रतिक्रिया दें?"},
+      code:"StartButton.InteractedWithEvent.Subscribe(OnStartPressed)",
+      options:{
+        fr:["Avec une boucle while qui vérifie sans arrêt l'état du bouton","En s'abonnant (Subscribe) à l'événement avec une fonction de rappel (callback)","Avec un Print à chaque frame","Ce n'est pas possible en Verse"],
+        en:["With a while loop constantly checking the button's state","By subscribing (Subscribe) to the event with a callback function","With a Print every frame","This isn't possible in Verse"],
+        es:["Con un bucle while que comprueba constantemente el estado del botón","Suscribiéndose (Subscribe) al evento con una función callback","Con un Print en cada frame","No es posible en Verse"],
+        pt:["Com um loop while checando constantemente o estado do botão","Inscrevendo-se (Subscribe) no evento com uma função callback","Com um Print a cada frame","Não é possível em Verse"],
+        de:["Mit einer while-Schleife, die ständig den Knopfzustand prüft","Durch Abonnieren (Subscribe) des Events mit einer Callback-Funktion","Mit einem Print bei jedem Frame","Das ist in Verse nicht möglich"],
+        ja:["ボタンの状態を常にチェックするwhileループで","コールバック関数でイベントを購読（Subscribe）する","毎フレームPrintする","Verseでは不可能"],
+        ko:["버튼 상태를 계속 확인하는 while 루프로","콜백 함수로 이벤트를 구독(Subscribe)함으로써","매 프레임 Print로","Verse에서는 불가능함"],
+        hi:["एक while लूप से जो बटन की स्थिति लगातार जांचता है","callback फ़ंक्शन के साथ event को subscribe करके","हर frame में Print से","Verse में यह संभव नहीं"]
+      },
+      correct:1,
+      explain:{fr:"Verse utilise un modèle événementiel : on s'abonne à un événement avec .Subscribe(MaFonction), qui sera appelée automatiquement quand l'événement se produit.",en:"Verse uses an event-driven model: you subscribe to an event with .Subscribe(MyFunction), which is automatically called when the event fires.",es:"Verse usa un modelo basado en eventos: te suscribes a un evento con .Subscribe(MiFunción), que se llamará automáticamente cuando ocurra el evento.",pt:"Verse usa um modelo orientado a eventos: você se inscreve num evento com .Subscribe(MinhaFunção), que será chamada automaticamente quando o evento ocorrer.",de:"Verse nutzt ein ereignisgesteuertes Modell: man abonniert ein Event mit .Subscribe(MeineFunktion), die automatisch beim Auftreten des Events aufgerufen wird.",ja:"Verseはイベント駆動モデルを使います：.Subscribe(自分の関数)でイベントを購読し、イベント発生時に自動的に呼ばれます。",ko:"Verse는 이벤트 기반 모델을 사용합니다: .Subscribe(내함수)로 이벤트를 구독하면 이벤트 발생 시 자동으로 호출됩니다.",hi:"Verse एक event-आधारित मॉडल इस्तेमाल करता है: आप .Subscribe(MyFunction) से event को subscribe करते हैं, जो event होने पर अपने आप बुलाया जाता है。"}
+    },
+    { type:'mcq',
+      prompt:{fr:"Dans 'StartButton.InteractedWithEvent.Subscribe(OnStartPressed)', que représente OnStartPressed ?",en:"In 'StartButton.InteractedWithEvent.Subscribe(OnStartPressed)', what does OnStartPressed represent?",es:"En 'StartButton.InteractedWithEvent.Subscribe(OnStartPressed)', ¿qué representa OnStartPressed?",pt:"Em 'StartButton.InteractedWithEvent.Subscribe(OnStartPressed)', o que representa OnStartPressed?",de:"Was steht in 'StartButton.InteractedWithEvent.Subscribe(OnStartPressed)' für OnStartPressed?",ja:"'StartButton.InteractedWithEvent.Subscribe(OnStartPressed)' の中でOnStartPressedは何を表しますか？",ko:"'StartButton.InteractedWithEvent.Subscribe(OnStartPressed)'에서 OnStartPressed는 무엇을 나타내나요?",hi:"'StartButton.InteractedWithEvent.Subscribe(OnStartPressed)' में OnStartPressed क्या दर्शाता है?"},
+      options:{
+        fr:["Une variable de type int","Le nom d'une fonction de rappel, appelée automatiquement à chaque interaction","Un tableau d'événements","Un type de dispositif"],
+        en:["An int-type variable","The name of a callback function, automatically called on each interaction","An array of events","A device type"],
+        es:["Una variable de tipo int","El nombre de una función callback, llamada automáticamente en cada interacción","Un array de eventos","Un tipo de dispositivo"],
+        pt:["Uma variável do tipo int","O nome de uma função callback, chamada automaticamente a cada interação","Um array de eventos","Um tipo de dispositivo"],
+        de:["Eine Variable vom Typ int","Der Name einer Callback-Funktion, die bei jeder Interaktion automatisch aufgerufen wird","Ein Array von Events","Ein Gerätetyp"],
+        ja:["int型の変数","各インタラクションで自動的に呼ばれるコールバック関数の名前","イベントの配列","デバイスの型"],
+        ko:["int 타입 변수","각 상호작용마다 자동으로 호출되는 콜백 함수의 이름","이벤트 배열","디바이스 타입"],
+        hi:["एक int टाइप वेरिएबल","हर इंटरैक्शन पर अपने आप बुलाई जाने वाली callback फ़ंक्शन का नाम","events का एक array","एक डिवाइस टाइप"]
+      },
+      correct:1,
+      explain:{fr:"OnStartPressed est une fonction déjà définie ailleurs dans le code, passée en référence : Verse l'appellera dès que le bouton sera pressé.",en:"OnStartPressed is a function defined elsewhere in the code, passed by reference: Verse will call it as soon as the button is pressed.",es:"OnStartPressed es una función definida en otra parte del código, pasada por referencia: Verse la llamará en cuanto se pulse el botón.",pt:"OnStartPressed é uma função definida em outra parte do código, passada por referência: Verse a chamará assim que o botão for pressionado.",de:"OnStartPressed ist eine Funktion, die anderswo im Code definiert und per Referenz übergeben wird: Verse ruft sie auf, sobald der Knopf gedrückt wird.",ja:"OnStartPressedはコードの他の場所で定義された関数で、参照として渡されます。ボタンが押されるとすぐにVerseがそれを呼び出します。",ko:"OnStartPressed는 코드의 다른 곳에서 정의된 함수로, 참조로 전달됩니다: 버튼이 눌리자마자 Verse가 이를 호출합니다.",hi:"OnStartPressed कोड में कहीं और परिभाषित एक फ़ंक्शन है, जिसे संदर्भ के रूप में पास किया गया है: बटन दबते ही Verse इसे बुलाएगा।"}
+    },
+    { type:'fill',
+      prompt:{fr:"Complète le nom de la méthode qui permet de s'abonner à un événement.",en:"Fill in the name of the method used to subscribe to an event.",es:"Completa el nombre del método para suscribirse a un evento.",pt:"Complete o nome do método usado para se inscrever num evento.",de:"Ergänze den Namen der Methode, um ein Event zu abonnieren.",ja:"イベントを購読するためのメソッド名を入力してください。",ko:"이벤트를 구독하는 데 쓰는 메서드 이름을 채워 넣으세요.",hi:"event को subscribe करने वाली मेथड का नाम भरें।"},
+      codeBefore:"EliminatedEvent().",
+      blankHint:{fr:"méthode",en:"method",es:"método",pt:"método",de:"Methode",ja:"メソッド",ko:"메서드",hi:"मेथड"},
+      codeAfter:"(OnEliminated)", answers:["Subscribe"],
+      explain:{fr:"Subscribe(...) est la méthode standard pour s'abonner à n'importe quel événement Verse et fournir la fonction de rappel associée.",en:"Subscribe(...) is the standard method to subscribe to any Verse event and provide its callback function.",es:"Subscribe(...) es el método estándar para suscribirse a cualquier evento Verse y proporcionar su función callback.",pt:"Subscribe(...) é o método padrão para se inscrever em qualquer evento Verse e fornecer sua função callback.",de:"Subscribe(...) ist die Standardmethode, um jedes Verse-Event zu abonnieren und seine Callback-Funktion bereitzustellen.",ja:"Subscribe(...)は、あらゆるVerseイベントを購読しコールバック関数を提供するための標準メソッドです。",ko:"Subscribe(...)는 모든 Verse 이벤트를 구독하고 콜백 함수를 제공하는 표준 메서드입니다.",hi:"Subscribe(...) किसी भी Verse event को subscribe करने और उसकी callback फ़ंक्शन देने की मानक मेथड है।"}
+    },
+    { type:'mcq',
+      prompt:{fr:"Pourquoi utiliser des events plutôt que vérifier une condition en boucle à chaque frame (polling) ?",en:"Why use events instead of checking a condition every frame in a loop (polling)?",es:"¿Por qué usar events en lugar de comprobar una condición en cada frame (polling)?",pt:"Por que usar events em vez de checar uma condição a cada frame (polling)?",de:"Warum Events statt einer Bedingung, die bei jedem Frame in einer Schleife geprüft wird (Polling)?",ja:"毎フレームループで条件をチェックする（ポーリング）代わりにイベントを使う理由は？",ko:"매 프레임마다 반복문으로 조건을 확인하는 것(polling) 대신 이벤트를 쓰는 이유는?",hi:"हर frame में लूप में शर्त जांचने (polling) के बजाय events का इस्तेमाल क्यों करें?"},
+      options:{
+        fr:["Les events sont plus lents","Réagir aux events évite de gaspiller des ressources à vérifier constamment un état qui ne change pas souvent","Le polling n'existe pas en Verse","Il n'y a aucune différence"],
+        en:["Events are slower","Reacting to events avoids wasting resources constantly checking a state that rarely changes","Polling doesn't exist in Verse","There's no difference"],
+        es:["Los events son más lentos","Reaccionar a events evita gastar recursos comprobando constantemente un estado que rara vez cambia","El polling no existe en Verse","No hay diferencia"],
+        pt:["Events são mais lentos","Reagir a events evita desperdiçar recursos checando constantemente um estado que raramente muda","Polling não existe em Verse","Não há diferença"],
+        de:["Events sind langsamer","Auf Events zu reagieren vermeidet Ressourcenverschwendung durch ständiges Prüfen eines selten wechselnden Zustands","Polling gibt es in Verse nicht","Es gibt keinen Unterschied"],
+        ja:["イベントは遅い","イベントに反応することで、めったに変わらない状態を常にチェックするリソースの無駄を避けられる","Verseにポーリングは存在しない","違いはない"],
+        ko:["이벤트가 더 느림","이벤트에 반응하면 거의 변하지 않는 상태를 계속 확인하는 자원 낭비를 피할 수 있음","Verse에는 polling이 없음","차이가 없음"],
+        hi:["Events धीमे होते हैं","events पर प्रतिक्रिया देने से बार-बार बदलने वाली न होने वाली स्थिति को लगातार जांचने में संसाधन बर्बाद नहीं होते","Verse में polling मौजूद नहीं","कोई अंतर नहीं"]
+      },
+      correct:1,
+      explain:{fr:"S'abonner à un événement laisse le moteur te prévenir uniquement quand quelque chose se passe, au lieu de vérifier sans cesse une condition — bien plus efficace.",en:"Subscribing to an event lets the engine notify you only when something happens, instead of constantly checking a condition — much more efficient.",es:"Suscribirse a un evento deja que el motor te avise solo cuando algo pasa, en lugar de comprobar sin cesar una condición — mucho más eficiente.",pt:"Inscrever-se num evento deixa o motor te avisar só quando algo acontece, em vez de checar sem parar uma condição — muito mais eficiente.",de:"Ein Event zu abonnieren lässt die Engine dich nur benachrichtigen, wenn etwas passiert, statt ständig eine Bedingung zu prüfen — viel effizienter.",ja:"イベントを購読すると、絶えず条件をチェックする代わりに、何か起きたときだけエンジンが知らせてくれます — はるかに効率的です。",ko:"이벤트를 구독하면 엔진이 무언가 발생했을 때만 알려주므로, 계속 조건을 확인하는 것보다 훨씬 효율적입니다.",hi:"event को subscribe करने से इंजन आपको तभी बताता है जब कुछ होता है, बजाय लगातार शर्त जांचने के — कहीं ज़्यादा कुशल।"}
+    },
+    { type:'mcq',
+      prompt:{fr:"Une fonction de callback comme OnStartPressed(Agent : agent) : void = ... reçoit généralement en paramètre :",en:"A callback function like OnStartPressed(Agent : agent) : void = ... generally receives as a parameter:",es:"Una función callback como OnStartPressed(Agent : agent) : void = ... generalmente recibe como parámetro:",pt:"Uma função callback como OnStartPressed(Agent : agent) : void = ... geralmente recebe como parâmetro:",de:"Eine Callback-Funktion wie OnStartPressed(Agent : agent) : void = ... erhält als Parameter meist:",ja:"OnStartPressed(Agent : agent) : void = ... のようなコールバック関数は通常パラメータとして何を受け取りますか？",ko:"OnStartPressed(Agent : agent) : void = ... 같은 콜백 함수는 일반적으로 매개변수로 무엇을 받나요?",hi:"OnStartPressed(Agent : agent) : void = ... जैसी callback फ़ंक्शन आमतौर पर पैरामीटर में क्या पाती है:"},
+      options:{
+        fr:["Toujours un int représentant un score","Des informations liées à l'événement, comme l'agent (joueur) concerné","Le code source du dispositif","Rien du tout, jamais de paramètre"],
+        en:["Always an int representing a score","Information tied to the event, like the agent (player) involved","The device's source code","Nothing at all, never a parameter"],
+        es:["Siempre un int que representa una puntuación","Información ligada al evento, como el agent (jugador) implicado","El código fuente del dispositivo","Nada, nunca un parámetro"],
+        pt:["Sempre um int representando uma pontuação","Informação ligada ao evento, como o agent (jogador) envolvido","O código-fonte do dispositivo","Nada, nunca um parâmetro"],
+        de:["Immer ein int, das einen Punktestand darstellt","Informationen zum Event, wie den beteiligten agent (Spieler)","Den Quellcode des Geräts","Gar nichts, nie einen Parameter"],
+        ja:["常にスコアを表すint","関与したagent（プレイヤー）などイベントに関連する情報","デバイスのソースコード","何も受け取らない、パラメータなし"],
+        ko:["항상 점수를 나타내는 int","관련된 agent(플레이어) 같은 이벤트 관련 정보","디바이스의 소스 코드","아무것도, 매개변수 없음"],
+        hi:["हमेशा स्कोर दर्शाने वाला एक int","event से जुड़ी जानकारी, जैसे शामिल agent (खिलाड़ी)","डिवाइस का सोर्स कोड","कुछ भी नहीं, कभी पैरामीटर नहीं"]
+      },
+      correct:1,
+      explain:{fr:"La signature du callback dépend de l'événement : ici, InteractedWithEvent fournit l'agent qui a interagi, pour que tu puisses réagir spécifiquement à ce joueur.",en:"The callback signature depends on the event: here, InteractedWithEvent provides the agent who interacted, so you can react specifically to that player.",es:"La firma del callback depende del evento: aquí, InteractedWithEvent da el agent que interactuó, para que puedas reaccionar específicamente a ese jugador.",pt:"A assinatura do callback depende do evento: aqui, InteractedWithEvent fornece o agent que interagiu, para você reagir especificamente a esse jogador.",de:"Die Callback-Signatur hängt vom Event ab: hier liefert InteractedWithEvent den agent, der interagiert hat, damit du speziell auf diesen Spieler reagieren kannst.",ja:"コールバックの署名はイベントによります。ここではInteractedWithEventが操作したagentを提供し、そのプレイヤーに特化して反応できます。",ko:"콜백 시그니처는 이벤트에 따라 다릅니다: 여기서는 InteractedWithEvent가 상호작용한 agent를 제공해 해당 플레이어에게 특별히 반응할 수 있습니다.",hi:"callback का सिग्नेचर event पर निर्भर करता है: यहाँ InteractedWithEvent वह agent देता है जिसने इंटरैक्ट किया, ताकि आप उस खिलाड़ी पर विशेष रूप से प्रतिक्रिया दे सकें。"}
+    }
+  ]
+}
+];
+
+/* ============ STATE ============ */
+let progress = { xp: 0, streak: 0, lastDate: null, completed: {}, lang: 'fr' };
+let session = null;
+
+const pathContainer = document.getElementById('pathContainer');
+const overlay = document.getElementById('overlay');
+const lessonBody = document.getElementById('lessonBody');
+const progressFill = document.getElementById('progressFill');
+const heartsDisplay = document.getElementById('heartsDisplay');
+const streakVal = document.getElementById('streakVal');
+const xpVal = document.getElementById('xpVal');
+const brandName = document.getElementById('brandName');
+const introTitle = document.getElementById('introTitle');
+const introSub = document.getElementById('introSub');
+const langSelect = document.getElementById('langSelect');
+const resetBtn = document.getElementById('resetBtn');
+
+function L(){ return progress.lang; }
+function t(field){ if(field==null) return ''; return field[L()] || field.en || field.fr || ''; }
+function ui(key, ...args){ const u = UI[L()] || UI.fr; const v = u[key]; return typeof v === 'function' ? v(...args) : v; }
+
+function todayStr(){
+  const d = new Date();
+  return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();
+}
+
+const STORAGE_KEY = 'verse-primer-progress';
+const hasClaudeStorage = (typeof window.storage !== 'undefined' && window.storage);
+
+async function storageGet(){
+  if(hasClaudeStorage){
+    try{ const res = await window.storage.get(STORAGE_KEY, false); return res ? res.value : null; }
+    catch(e){ return null; }
+  }
+  try{ return window.localStorage.getItem(STORAGE_KEY); }
+  catch(e){ return null; }
+}
+async function storageSet(value){
+  if(hasClaudeStorage){
+    try{ await window.storage.set(STORAGE_KEY, value, false); return true; }
+    catch(e){ console.error('Erreur de sauvegarde (window.storage)', e); return false; }
+  }
+  try{ window.localStorage.setItem(STORAGE_KEY, value); return true; }
+  catch(e){ console.error('Erreur de sauvegarde (localStorage)', e); return false; }
+}
+
+async function loadProgress(){
+  try{
+    const raw = await storageGet();
+    if(raw){ progress = Object.assign({xp:0,streak:0,lastDate:null,completed:{},lang:'fr'}, JSON.parse(raw)); }
+  }catch(e){ /* première visite */ }
+
+  const today = todayStr();
+  if(progress.lastDate !== today){
+    const y = new Date(); y.setDate(y.getDate()-1);
+    const yStr = y.getFullYear()+'-'+(y.getMonth()+1)+'-'+y.getDate();
+    progress.streak = (progress.lastDate === yStr) ? (progress.streak||0) + 1 : 1;
+    progress.lastDate = today;
+    await saveProgress();
+  }
+  renderAll();
+}
+async function saveProgress(){ await storageSet(JSON.stringify(progress)); }
+
+function renderAll(){
+  renderStats();
+  renderLangSelect();
+  renderStaticText();
+  renderPath();
+}
+function renderStats(){ streakVal.textContent = progress.streak || 0; xpVal.textContent = progress.xp || 0; }
+function renderStaticText(){
+  document.documentElement.lang = L();
+  brandName.textContent = ui('brand');
+  introTitle.textContent = ui('introTitle');
+  introSub.textContent = ui('introSub');
+  resetBtn.title = ui('resetLabel');
+}
+function renderLangSelect(){
+  langSelect.innerHTML = LANGS.map(l => `<option value="${l.code}" ${l.code===L()?'selected':''}>${l.name}</option>`).join('');
+  langSelect.onchange = async ()=>{
+    progress.lang = langSelect.value;
+    await saveProgress();
+    renderAll();
+    if(session && overlay.classList.contains('active')){ renderStage(); }
+  };
+}
+
+async function resetProgress(){
+  if(!window.confirm(ui('resetConfirm'))) return;
+  progress = { xp: 0, streak: 1, lastDate: todayStr(), completed: {}, lang: progress.lang };
+  await saveProgress();
+  renderAll();
+}
+resetBtn.addEventListener('click', resetProgress);
+
+/* ============ PATH SCREEN ============ */
+function renderPath(){
+  pathContainer.innerHTML = '';
+  UNITS.forEach((unit, i) => {
+    const unlocked = i === 0 || progress.completed[UNITS[i-1].id];
+    const done = !!progress.completed[unit.id];
+    const row = document.createElement('div');
+    row.className = 'unit-row ' + (i % 2 === 0 ? 'left' : 'right');
+    row.innerHTML = `
+      <div class="unit-card">
+        <button class="hex-btn ${done ? 'done' : ''} ${!unlocked ? 'locked' : ''}" data-idx="${i}" ${!unlocked ? 'disabled' : ''}>
+          ${done ? '✓' : (unlocked ? unit.num : '🔒')}
+        </button>
+        <div class="unit-label">
+          <div class="name">${t(unit.title)}</div>
+          <div class="sub">${t(unit.subtitle)}</div>
+        </div>
+      </div>`;
+    pathContainer.appendChild(row);
+  });
+  pathContainer.querySelectorAll('.hex-btn:not(.locked)').forEach(btn=>{
+    btn.addEventListener('click', ()=> startLesson(parseInt(btn.dataset.idx)));
+  });
+}
+
+/* ============ LESSON FLOW ============ */
+function startLesson(unitIndex){
+  session = { unitIndex, exIndex: 0, hearts: 5, correctCount: 0, stage: 'intro' };
+  overlay.classList.add('active');
+  renderStage();
+}
+function closeLesson(){
+  overlay.classList.remove('active');
+  session = null;
+  renderPath();
+}
+document.getElementById('closeBtn').addEventListener('click', closeLesson);
+
+function renderStage(){
+  const footer = document.querySelector('.lesson-footer');
+  if(footer) footer.remove();
+  if(session.stage === 'intro') return renderIntro();
+  if(session.stage === 'exercise') return renderExercise();
+}
+
+function renderIntro(){
+  const unit = UNITS[session.unitIndex];
+  progressFill.style.width = '0%';
+  heartsDisplay.innerHTML = Array.from({length:5}).map(()=> '❤️').join('');
+  lessonBody.innerHTML = `
+    <div class="card">
+      <div class="eyebrow">${ui('lessonTag')} · ${t(unit.title)}</div>
+      <div class="prompt">${t(unit.title)}</div>
+      <div class="lesson-explain">${t(unit.lesson)}</div>
+      <div class="codeblock">${escapeHtml(t(unit.lessonCode))}</div>
+    </div>`;
+  setFooterReady(true, ()=>{ session.stage = 'exercise'; session.exIndex = 0; renderStage(); });
+  document.getElementById('footerBtn').textContent = ui('startExercises');
+}
+
+function updateHeader(){
+  const unit = UNITS[session.unitIndex];
+  const pct = Math.round((session.exIndex / unit.exercises.length) * 100);
+  progressFill.style.width = pct + '%';
+  heartsDisplay.innerHTML = Array.from({length:5}).map((_,i)=>
+    i < session.hearts ? '❤️' : '🖤'
+  ).join('');
+}
+
+function renderExercise(){
+  const unit = UNITS[session.unitIndex];
+  if(session.exIndex >= unit.exercises.length){ return renderSummary(true); }
+  if(session.hearts <= 0){ return renderSummary(false); }
+
+  updateHeader();
+  const ex = unit.exercises[session.exIndex];
+  session.answered = false;
+
+  let codeHtml = '';
+  if(ex.type === 'mcq' && ex.code){
+    codeHtml = `<div class="codeblock">${escapeHtml(ex.code)}</div>`;
+  }
+
+  let bodyHtml = `
+    <div class="card">
+      <div class="eyebrow">${t(unit.title)} · ${session.exIndex+1}/${unit.exercises.length}</div>
+      <div class="prompt">${t(ex.prompt)}</div>
+      ${codeHtml}
+  `;
+
+  if(ex.type === 'mcq'){
+    bodyHtml += `<div class="options" id="optionsWrap">`;
+    t(ex.options).forEach((opt, i)=>{
+      bodyHtml += `<button class="opt" data-idx="${i}">${escapeHtml(opt)}</button>`;
+    });
+    bodyHtml += `</div>`;
+  } else if(ex.type === 'fill'){
+    bodyHtml += `<div class="codeblock">${escapeHtml(ex.codeBefore)}<input type="text" class="blank-input" id="fillInput" placeholder="${t(ex.blankHint)}" autocomplete="off" spellcheck="false">${escapeHtml(ex.codeAfter)}</div>`;
+  }
+
+  bodyHtml += `<div class="feedback" id="feedback"></div></div>`;
+  lessonBody.innerHTML = bodyHtml;
+
+  if(ex.type === 'mcq'){
+    let selected = null;
+    document.querySelectorAll('.opt').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        if(session.answered) return;
+        document.querySelectorAll('.opt').forEach(b=>b.classList.remove('selected'));
+        btn.classList.add('selected');
+        selected = parseInt(btn.dataset.idx);
+        setFooterReady(true, ()=> checkMcq(ex, selected));
+      });
+    });
+  } else if(ex.type === 'fill'){
+    const input = document.getElementById('fillInput');
+    input.addEventListener('input', ()=>{
+      setFooterReady(input.value.trim().length > 0, ()=> checkFill(ex, input));
+    });
+    input.addEventListener('keydown', (e)=>{
+      if(e.key === 'Enter' && !session.answered && input.value.trim().length>0){ checkFill(ex, input); }
+    });
+    setTimeout(()=>input.focus(), 50);
+  }
+  setFooterReady(false);
+  document.getElementById('footerBtn').textContent = ui('validate');
+}
+
+function setFooterReady(ready, onClick){
+  let footer = document.querySelector('.lesson-footer');
+  if(!footer){
+    footer = document.createElement('div');
+    footer.className = 'lesson-footer';
+    footer.innerHTML = `<button class="btn-main" id="footerBtn">${ui('validate')}</button>`;
+    lessonBody.parentElement.appendChild(footer);
+  }
+  const btn = document.getElementById('footerBtn');
+  btn.disabled = !ready;
+  btn.className = 'btn-main' + (ready ? ' ready' : '');
+  btn.onclick = onClick || null;
+}
+
+function checkMcq(ex, selectedIdx){
+  if(session.answered) return;
+  session.answered = true;
+  const correct = selectedIdx === ex.correct;
+  document.querySelectorAll('.opt').forEach((b, i)=>{
+    b.disabled = true;
+    if(i === ex.correct) b.classList.add('correct');
+    else if(i === selectedIdx) b.classList.add('incorrect');
+  });
+  showFeedback(correct, t(ex.explain));
+}
+
+function checkFill(ex, input){
+  if(session.answered) return;
+  session.answered = true;
+  const val = input.value.trim().toLowerCase();
+  const correct = ex.answers.some(a => a.trim().toLowerCase() === val);
+  input.disabled = true;
+  input.style.borderColor = correct ? 'var(--teal)' : 'var(--red)';
+  showFeedback(correct, t(ex.explain), correct ? null : ex.answers[0]);
+}
+
+function showFeedback(correct, explain, correctAnswer){
+  const fb = document.getElementById('feedback');
+  fb.classList.add('show', correct ? 'correct' : 'incorrect');
+  const headline = correct ? ui('exact') : (correctAnswer ? ui('almostPrefix') + correctAnswer : ui('notQuite'));
+  fb.innerHTML = `<b>${headline}</b>${explain}`;
+
+  if(correct){ session.correctCount++; progress.xp += 10; renderStats(); }
+  else{ session.hearts--; updateHeader(); }
+
+  setFooterReady(true, nextExercise);
+  document.getElementById('footerBtn').textContent = ui('continue');
+}
+
+function nextExercise(){
+  session.exIndex++;
+  const footer = document.querySelector('.lesson-footer');
+  if(footer) footer.remove();
+  renderExercise();
+}
+
+async function renderSummary(success){
+  const unit = UNITS[session.unitIndex];
+  const footer = document.querySelector('.lesson-footer');
+  if(footer) footer.remove();
+
+  if(success){
+    progress.completed[unit.id] = true;
+    await saveProgress();
+    lessonBody.innerHTML = `
+      <div class="summary">
+        <div class="big-mark">📜</div>
+        <h2>${ui('lessonDone')}</h2>
+        <p>${ui('lessonDoneDesc', t(unit.title))}</p>
+        <div class="summary-stats">
+          <div class="summary-stat"><div class="val">${session.correctCount}/${unit.exercises.length}</div><div class="lbl">${ui('correctLbl')}</div></div>
+          <div class="summary-stat"><div class="val">+${session.correctCount*10}</div><div class="lbl">${ui('xpLbl')}</div></div>
+          <div class="summary-stat"><div class="val">${session.hearts}</div><div class="lbl">${ui('livesLbl')}</div></div>
+        </div>
+      </div>`;
+  } else {
+    lessonBody.innerHTML = `
+      <div class="summary">
+        <div class="big-mark">💔</div>
+        <h2>${ui('noLivesTitle')}</h2>
+        <p>${ui('noLivesDesc')}</p>
+      </div>`;
+  }
+  const footerDiv = document.createElement('div');
+  footerDiv.className = 'lesson-footer';
+  footerDiv.innerHTML = `<button class="btn-main ready" id="footerBtn">${success ? ui('backToPath') : ui('retry')}</button>`;
+  lessonBody.parentElement.appendChild(footerDiv);
+  document.getElementById('footerBtn').onclick = ()=>{
+    if(success){ closeLesson(); }
+    else{ startLesson(session.unitIndex); }
+  };
+}
+
+function escapeHtml(str){
+  return str.replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+}
+
+loadProgress();
+</script>
+</body>
+</html>
